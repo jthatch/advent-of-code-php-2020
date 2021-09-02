@@ -16,9 +16,12 @@ It has many helpful features to make tackling each Days' challenge as easy as po
 that will automatically fetch the input from [adventofcode](https://adventofcode.com)'s servers.
 
 ### Instructions
-- Run all tests  
- `make tests`
-- Fetch the Next days input from the server. (Note: the Makefile reads the [/src](/src) directory to find the most recent DayN.php file. If you had just completed `Day1.php` you would create a `Day2.php` and then run this command to fetch `/input/day2.txt`     
+- **Run all tests**  
+ `make tests`  
+  
+  
+- **Fetch the next days input from the server.**  
+  _Note: The Makefile reads the [/src](/src) directory to find the most recent DayN.php file. If you had just completed `Day1.php` you would create a `Day2.php` and then run this command to fetch `/input/day2.txt`_  
   `make day`
 
 ### Full commands
