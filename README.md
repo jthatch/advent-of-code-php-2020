@@ -1,6 +1,9 @@
 ## Advent of Code PHP 2020 
 >The solutions to advent of code 2020 in php, specifically PHP8/Jest, by [James Thatcher](http://github.com/jthatch)
 
+### Solutions
+- [Day1 solution](/src/Day1.php) --- [Day2 solution](/src/Day2.php)
+
 ### About
 
 As mentioned this is my attempt at tacking the awesome challenges at [Advent of Code 2020](https://adventofcode.com/2020/day/1) using PHP8.
