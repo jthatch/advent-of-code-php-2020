@@ -1,8 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App;
 
 abstract class DayBehaviour
 {
-    public function __construct(protected string $input) {}
+    public function __construct(protected array $input)
+    {
+    }
 }

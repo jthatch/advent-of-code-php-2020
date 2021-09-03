@@ -4,28 +4,49 @@ declare(strict_types=1);
 
 namespace App;
 
+use App\Exceptions\DayClassNotFoundException;
+use App\Exceptions\DayInputNotFoundException;
 use App\Interfaces\DayInterface;
-use App\Interfaces\ItemInterface;
 
 class DayFactory
 {
-    public static function create(int $day): DayInterface
+    protected const MAX_DAYS     = 20;
+    protected const CLASS_FORMAT = 'Day%d';
+    protected const INPUT_FORMAT = __DIR__.'/../input/day%d.txt';
+
+    public static function create(int $dayNumber): DayInterface
     {
-        $name = strtolower($item->name);
+        $dayClassName = static::getDayClass($dayNumber);
+        $dayInputName = static::getDayInput($dayNumber);
 
-        return match (true) {
-            str_contains($name, 'backstage passes') => new BackstagePassItem($item),
-            str_contains($name, 'aged brie')        => new AgedBrieItem($item),
-            str_contains($name, 'sulfuras')         => new SulfurasItem($item),
-            str_contains($name, 'conjured')         => new ConjuredItem($item),
-            str_contains($name, 'normal')           => new NormalItem($item),
+        $dayInput = file($dayInputName)
+            ?? throw new DayInputNotFoundException("Input file not found: {$dayInputName}", $dayNumber);
 
-            default => $item
-        };
+        return new $dayClassName($dayInput)
+            ?? throw new DayClassNotFoundException("Missing day class: {$dayClassName}");
     }
 
-    public static function createBulk(array $items): array|ItemInterface
+    public static function createAllDaysCompleted(): array
     {
-        return array_map(static fn (Item $item) => static::create($item), $items);
+        $daysCompleted = [];
+        foreach (range(1, static::MAX_DAYS) as $dayNumber) {
+            try {
+                $daysCompleted[] = static::create($dayNumber);
+            } catch (DayClassNotFoundException|DayInputNotFoundException) {
+                break;
+            }
+        }
+
+        return $daysCompleted;
+    }
+
+    private static function getDayClass(int $dayNumber): string
+    {
+        return __NAMESPACE__.'\\'.sprintf(static::CLASS_FORMAT, $dayNumber);
+    }
+
+    private static function getDayInput(int $dayNumber): string
+    {
+        return sprintf(static::INPUT_FORMAT, $dayNumber);
     }
 }

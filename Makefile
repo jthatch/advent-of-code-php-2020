@@ -2,6 +2,7 @@ help: ## This help.
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
 .DEFAULT_GOAL := help
+.PHONY: tests
 
 # basic vars
 image-name :=aoc-2020
@@ -50,7 +51,7 @@ endef
 
 tests: ## runs the kahlan tests within the docker container
 ifneq ("$(wildcard vendor)", "")
-	$(DOCKER_RUN_PHP) php vendor/bin/pest
+	$(DOCKER_RUN_PHP) vendor/bin/pest --testdox
 else
 	@echo "\nFirst run detected! No vendor/ folder found, running composer update...\n"
 	make composer
@@ -78,6 +79,9 @@ down: ## stop's the php docker container
 
 cleanup: ## remove all docker images
 	docker rm $$(docker ps -a | grep '$(image-name)' | awk '{print $$1}') --force
+
+cs-fix: ## run php-cs-fixer
+	$(DOCKER_RUN_COMPOSER) cs-fixer
 
 day: ## Retrieves the latest day's input from server
 ifndef aocCookie
