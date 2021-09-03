@@ -1,5 +1,5 @@
 ## Advent of Code PHP 2020 
->The solutions to advent of code 2020 in php, specifically PHP8/Jest, by [James Thatcher](http://github.com/jthatch)
+>The solutions to advent of code 2020 in php, specifically PHP8/Pest, by [James Thatcher](http://github.com/jthatch)
 
 ### Solutions
 - [Day1 solution](/src/Day1.php) --- [Day2 solution](/src/Day2.php)
@@ -9,14 +9,14 @@
 As mentioned this is my attempt at tacking the awesome challenges at [Advent of Code 2020](https://adventofcode.com/2020/day/1) using PHP8.
 
 You will find the solutions in the [/src](/src) directory and if you're feeling cheeky, the [/tests](/tests) folder
-has your expected inputs. The raw inputs are stored in [/input](/input), fetched automatically via a cheeky `make day` command.
+has your expected answers to each day. The raw inputs are stored in [/input](/input), fetched automatically via the `make day` command.
 
 Included in this repo is also a handy [Makefile](/Makefile) that launches a php docker container to execute the tests.
 
 If you fancy having a go at the challenges yourself feel free to use this repo as a framework/skeleton.
 
 It has many helpful features to make tackling each Days' challenge as easy as possible, as well as commands like `make day` 
-that will automatically fetch the input from [adventofcode](https://adventofcode.com)'s servers.
+that will automatically fetch the input from [adventofcode](https://adventofcode.com)'s servers along with an xdebug instance for debugging those particularly difficult challenges.
 
 ### Instructions
 - **Run all tests**  
