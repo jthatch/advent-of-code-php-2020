@@ -49,7 +49,7 @@ docker run --rm -it --tty \
     	composer
 endef
 
-tests: ## runs the kahlan tests within the docker container
+tests: ## runs each days pest tests within a docker container
 ifneq ("$(wildcard vendor)", "")
 	$(DOCKER_RUN_PHP) vendor/bin/pest --testdox
 else
@@ -70,12 +70,6 @@ shell: ## Launch a shell into the docker container
 
 xdebug: ## Launch a php container with xdebug (port 10000)
 	$(DOCKER_RUN_PHP_XDEBUG) /bin/bash
-
-xdebug-down: ## stop xdebug
-	docker stop $(image-name)-xdebug
-
-down: ## stop's the php docker container
-	docker stop $(image-name)
 
 cleanup: ## remove all docker images
 	docker rm $$(docker ps -a | grep '$(image-name)' | awk '{print $$1}') --force

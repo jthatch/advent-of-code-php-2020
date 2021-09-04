@@ -23,19 +23,27 @@ that will automatically fetch the input from [adventofcode](https://adventofcode
  `make tests`  
   
   
+- **Use XDebug**  
+  `make xdebug` at the shell type: `vendor/bin/pest`  
+  IDE settings: 
+  - `10000` - xdebug port 
+  - `aoc-2020` - PHP_IDE_CONFIG (what you put in PHPStorm -> settings -> debug -> server -> name)
+  - `/app` - absolute path on the server  
+  - see [xdebug.ini](/xdebug.ini) if you're stuck
+
+
 - **Fetch the next days input from the server.**  
-  _Note: The Makefile reads the [/src](/src) directory to find the most recent DayN.php file. If you had just completed `Day1.php` you would create a `Day2.php` and then run this command to fetch `/input/day2.txt`_  
-  `make day`
+  `make day`  
+  _Note: The Makefile reads the [/src](/src) directory to find the most recent DayN.php file. If you had just completed `Day1.php` you would create a `Day2.php` and then run this command to fetch `/input/day2.txt`_
 
 ### Full make commands
 ```shell
 help                           This help.
-tests                          runs the pest tests for each Day's answer
+tests                          runs easy days pest tests within a docker container
 composer                       Runs `composer update` on CWD, specify other commands via cmd=
 shell                          Launch a shell into the docker container
-xdebug                         Launch a php container with xdebug (port 10000)
-xdebug-down                    stop xdebug
-down                           stop's the php docker container
-cleanup                        remove all docker images
+xdebug                         Launch a php container with xdebug (PHP_IDE_CONFIG=aoc-2020, port 10000)
+cleanup                        remove aoc docker images
+cs-fix                         run php-cs-fixer
 day                            Retrieves the latest day's input from server
 ```
