@@ -27,8 +27,7 @@ class Day4 extends DayBehaviour implements DayInterface
         }
 
         // valid passports: all 8 fields, or 7 except cid (santa has no country of origin)
-        return array_filter($passports, static fn ($p) => 8 === count($p) || (7 === count($p) && !isset($p['cid']))
-        );
+        return array_filter($passports, static fn ($p) => 8 === count($p) || (7 === count($p) && !isset($p['cid'])));
     }
 
     public function solvePart1(): ?int
@@ -39,8 +38,35 @@ class Day4 extends DayBehaviour implements DayInterface
     public function solvePart2(): ?int
     {
         $passports = $this->solvePart1ReturningPassports();
-        // todo finish this
 
-        return null;
+        return count(array_filter($passports, static function ($p) {
+            // hgt (Height) - a number followed by either cm or in:
+            if (($validHeight = (bool) preg_match('/(\d+)(cm|in)/', $p['hgt'], $matches)) !== false) {
+                $validHeight = match ($matches[2]) {
+                    // If cm, the number must be at least 150 and at most 193.
+                    'cm' => (150 <= (int) $matches[1] && 193 >= (int) $matches[1]),
+                    // If in, the number must be at least 59 and at most 76.
+                    'in'    => (59 <= (int) $matches[1] && 76 >= (int) $matches[1]),
+                    default => false
+                };
+            }
+
+            return
+                // byr (Birth Year) - four digits; at least 1920 and at most 2002.
+                (1920 <= (int) $p['byr'] && 2002 >= (int) $p['byr'])
+                // iyr (Issue Year) - four digits; at least 2010 and at most 2020.
+                && (2010 <= (int) $p['iyr'] && 2020 >= (int) $p['iyr'])
+                // eyr (Expiration Year) - four digits; at least 2020 and at most 2030.
+                && (2020 <= (int) $p['eyr'] && 2030 >= (int) $p['eyr'])
+                // hgt (Height) - a number followed by either cm or in:
+                && $validHeight
+                // hcl (Hair Color) - a # followed by exactly six characters 0-9 or a-f
+                && (preg_match('/^#([a-f0-9]{3}){1,2}$/i', $p['hcl']))
+                // ecl (Eye Color) - exactly one of: amb blu brn gry grn hzl oth.
+                && (in_array($p['ecl'], ['amb', 'blu', 'brn', 'gry', 'grn', 'hzl', 'oth']))
+                // pid (Passport ID) - a nine-digit number, including leading zeroes.
+                && (preg_match('/^(\d{9})$/', $p['pid']))
+                ;
+        }));
     }
 }
