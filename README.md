@@ -2,7 +2,7 @@
 >The solutions to advent of code 2020 in php, specifically PHP8/Pest, by [James Thatcher](http://github.com/jthatch)
 
 ### Solutions
-- [Day1 solution](/src/Day1.php) --- [Day2 solution](/src/Day2.php)
+[Day1 solution](/src/Day1.php) --- [Day2 solution](/src/Day2.php) --- [Day3 solution](/src/Day3.php)
 
 ### About
 
