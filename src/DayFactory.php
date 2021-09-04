@@ -19,7 +19,7 @@ class DayFactory
         $dayClassName = static::getDayClass($dayNumber);
         $dayInputName = static::getDayInput($dayNumber);
 
-        $dayInput = file($dayInputName)
+        $dayInput = file($dayInputName) // this includes new lines as we want the raw input
             ?? throw new DayInputNotFoundException("Input file not found: {$dayInputName}", $dayNumber);
 
         return new $dayClassName($dayInput)
