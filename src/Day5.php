@@ -12,13 +12,14 @@ class Day5 extends DayBehaviour implements DayInterface
     {
         $seatIds = [];
         foreach ($this->input as $input) {
+            // split the first 7 letters into row instructions and the remaining 3 into column
             [$rowSeatGrid, $colSeatGrid] = array_chunk(str_split(trim($input)), 7);
 
             // This represents the possible range of rows on a plane
             $rowRange = [0, 127];
             $lastRow  = count($rowSeatGrid) - 1;
             // Loop over each row seat grid, picking the lower or upper half of the difference between the rowRange
-            // ultimately you'll end up with a row number e.g. [45, 45], with 45 being the row ID
+            // ultimately you'll end up with a single row number e.g. 45
             array_map(static function (int $i, string $region) use (&$rowRange, $lastRow): void {
                 $rowRange = match ($region) {
                     'F' => $i !== $lastRow
@@ -34,7 +35,7 @@ class Day5 extends DayBehaviour implements DayInterface
                 };
             }, array_keys($rowSeatGrid), $rowSeatGrid);
 
-            // now calculate columns
+            // now calculate columns the same way
             $colRange = [0, 7];
             $lastCol  = count($colSeatGrid) - 1;
             array_map(static function (int $i, string $region) use (&$colRange, $lastCol): void {
@@ -52,8 +53,8 @@ class Day5 extends DayBehaviour implements DayInterface
                 };
             }, array_keys($colSeatGrid), $colSeatGrid);
 
-            //Every seat also has a unique seat ID:
-            // multiply the row by 8, then add the column. In this example, the seat has ID 44 * 8 + 5 = 357.
+            // Every seat also has a unique seat ID:
+            // multiply the row by 8, then add the column.
             $uniqueSeatId = ($rowRange * 8) + $colRange;
             // to help with part 2, we return seatId, row and col range indexed by the input instruction
             $seatIds[trim($input)] = [$uniqueSeatId, $rowRange, $colRange];
@@ -69,12 +70,15 @@ class Day5 extends DayBehaviour implements DayInterface
 
     /**
      * this one was hard. after a few failed attempts I realised my solution in part1 had bugs.
+     * As the lower half starts from zero, the initial subtraction when calculating F or L was a number out, which
+     * had a knock-on effect.
      * The solution was to chop the decimal point when taking the lower half, but ceil() when taking the upper half.
-     * Once i solved that, my seatId's become a nice uniform (except one) incrementing list, whereas before there
+     * Once I solved that, the seatId's became a nice uniform incrementing list (except one), whereas before there
      * were a lot of duplicates.
-     * it took breaking it down into an multi-dimensional array of rows vs columns to see my mistake.
-     * Once i refactored part1 it became obvious which seat was missing.
-     * I've left my working out for prosperity and in-case i need to refer back to some fancy sorting :)
+     * it took breaking it down into a multi-dimensional array of rows vs columns to see my mistake.
+     * Once I refactored part1 it became obvious which seat was missing.
+     * I've left my working out for prosperity and in-case I need to refer back to some fancy sorting :).
+     *
      * @return int|null
      */
     public function solvePart2(): ?int
