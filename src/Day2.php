@@ -11,7 +11,7 @@ class Day2 extends DayBehaviour implements DayInterface
     public function solvePart1(): ?int
     {
         return count(array_filter($this->input, static function ($line) {
-            preg_match('/(\d+)\-(\d+) (\w): (.+)/', $line, $matches);
+            preg_match('/(\d+)-(\d+) (\w): (.+)/', $line, $matches);
             [,$min, $max, $chr, $password] = $matches;
             $chrOccurrences = substr_count($password, $chr);
 
@@ -28,7 +28,7 @@ class Day2 extends DayBehaviour implements DayInterface
     public function solvePart2(): ?int
     {
         return count(array_filter($this->input, static function ($line) {
-            preg_match('/(\d+)\-(\d+) (\w): (.+)/', $line, $matches);
+            preg_match('/(\d+)-(\d+) (\w): (.+)/', $line, $matches);
             [,$position1, $position2, $chr, $password] = $matches;
 
             // padding string with a non-alpha character to fix index zero
