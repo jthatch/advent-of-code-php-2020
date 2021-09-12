@@ -46,7 +46,8 @@ define DOCKER_RUN_COMPOSER
 docker run --rm -it \
 	--name "$(image-name)-composer" \
 	-u "$(uid):$(gid)" \
-	-v "$(PWD):/app"
+	-v "$(PWD):/app" \
+	composer
 endef
 
 tests: ## runs each days pest tests within a docker container

@@ -19,7 +19,7 @@ class Day7 extends DayBehaviour implements DayInterface
         foreach ($this->input as $rule) {
             [$colour, $contains] = array_map('trim', explode('contain', $rule, 2));
             $colour              = str_replace(' bags', '', $colour);
-            $bags[$colour]     ??= [];
+            $bags[$colour] ??= [];
             preg_match_all('/(\d) ([a-z ]+) bags?/', $contains, $matches, PREG_SET_ORDER);
             $bags[$colour] = array_merge($bags[$colour], ...array_map(static fn (array $m) => [$m[2] => (int) $m[1]], $matches));
         }
@@ -29,6 +29,7 @@ class Day7 extends DayBehaviour implements DayInterface
 
     /**
      * How many bag colors can eventually contain at least one shiny gold bag?
+     *
      * @return int|null
      */
     public function solvePart1(): ?int
@@ -59,9 +60,10 @@ class Day7 extends DayBehaviour implements DayInterface
 
     /**
      * Map the bags into a nested multi-dimensional tree structure of parent/children using recursion
-     * this handles the `doubly logarithmic tree` problem where each bag contains multiple bags that contain multiple bags, ...and so on,
+     * this handles the `doubly logarithmic tree` problem where each bag contains multiple bags that contain multiple bags, ...and so on,.
      *
      * @param string $targetBag
+     *
      * @return array|null
      */
     protected function bagTraverse(string $targetBag): ?array
@@ -71,7 +73,7 @@ class Day7 extends DayBehaviour implements DayInterface
         $data = array_map(fn ($childBag, $count) => [
                 'bag'   => $childBag,
                 'count' => $count,
-                'child' => $this->bagTraverse($childBag)
+                'child' => $this->bagTraverse($childBag),
             ], array_keys($child), $child);
 
         return $data;
@@ -80,29 +82,31 @@ class Day7 extends DayBehaviour implements DayInterface
     protected function bagCount(array $bagTree, $parentBagCount = 1): array
     {
         $bagCount = [];
-        foreach($bagTree as $tree) {
-            $currCount = $tree['count'] * $parentBagCount;
+        foreach ($bagTree as $tree) {
+            $currCount  = $tree['count'] * $parentBagCount;
             $bagCount[] = $currCount;
 
             /** @noinspection SlowArrayOperationsInLoopInspection */
             $bagCount = array_merge($bagCount,
                 ...array_map(function ($childBags) use ($currCount) {
-                return $this->bagCount([$childBags], $currCount);
-            }, $tree['child']));
+                    return $this->bagCount([$childBags], $currCount);
+                }, $tree['child']));
         }
+
         return $bagCount;
     }
 
     /**
      * How many individual bags are required inside your single shiny gold bag?
-     * This requires us to implement and solve the "General Tree" data structure problem
+     * This requires us to implement and solve the "General Tree" data structure problem.
+     *
      * @return int|null
      */
     public function solvePart2(): ?int
     {
         $this->bags = $this->getBags();
-        $bagTree = $this->bagTraverse('shiny gold');
-        $bagCount = $this->bagCount($bagTree);
+        $bagTree    = $this->bagTraverse('shiny gold');
+        $bagCount   = $this->bagCount($bagTree);
 
         return array_sum($bagCount);
     }
