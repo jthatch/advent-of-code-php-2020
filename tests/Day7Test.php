@@ -17,5 +17,5 @@ test('solves part1')
 
 test('solves part2')
     ->expect(fn () => $this->day->solvePart2())
-    ->toBe(126)
+    ->toBe(1250)
 ;

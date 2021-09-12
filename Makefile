@@ -43,10 +43,10 @@ docker run -it --rm \
 endef
 
 define DOCKER_RUN_COMPOSER
-docker run --rm -it --tty \
-    	-u "$(uid):$(gid)" \
-    	-v "$(PWD):/app" \
-    	composer
+docker run --rm -it \
+	--name "$(image-name)-composer" \
+	-u "$(uid):$(gid)" \
+	-v "$(PWD):/app"
 endef
 
 tests: ## runs each days pest tests within a docker container
@@ -69,6 +69,7 @@ shell: ## Launch a shell into the docker container
 	$(DOCKER_RUN_PHP) /bin/bash
 
 xdebug: ## Launch a php container with xdebug (port 10000)
+	@echo "=== Xdebug Launch Instructions ===\nAt the prompt type:\nvendor/bin/pest\n\n"
 	$(DOCKER_RUN_PHP_XDEBUG) /bin/bash
 
 cleanup: ## remove all docker images
