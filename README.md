@@ -3,7 +3,8 @@
 
 ### Solutions
 > 🎄 [Day1 solution](/src/Day1.php) 🎅 [Day2 solution](/src/Day2.php) ☃️ [Day3 solution](/src/Day3.php) 🦌 [Day4 solution](/src/Day4.php) 
-> 🍪 [Day5 solution](/src/Day5.php) 🥛 [Day6 solution](/src/Day6.php) 🧦 [Day7 solution](/src/Day7.php)
+> 🍪 [Day5 solution](/src/Day5.php)   
+> 🥛 [Day6 solution](/src/Day6.php) 🧦 [Day7 solution](/src/Day7.php)
 
 ### About
 
