@@ -15,7 +15,7 @@ gid        :=$(shell id -g)
 # When you move to a new day you would create the DayN.php file then run `make day`
 # to retrieve that input, storing it in ./input/day[N].txt
 # saves time
-latestDay :=$(shell find src -maxdepth 1 -type f  \( -name "Day[0-9][0-9].php" -o -name "Day[0-9].php" \) -printf '%f\n' | sort -Vr | head -1 | grep -o '[0-9]\+' || echo "1")
+latestDay :=$(shell find src -maxdepth 1 -type f  \( -name "Day[0-9][0-9].php" -o -name "Day[0-9].php" \) -print0 | xargs -0 stat -f '%N ' | sort -Vr | head -1 | grep -o '[0-9]\+' || echo "1")
 # in order to retrieve the Days input from the server you must login to adventofcode.com and grab the `session` cookie
 # then set export AOC_COOKIE=53616c7465645f5f2b44c4d4742765e14...
 aocCookie :=$(AOC_COOKIE)

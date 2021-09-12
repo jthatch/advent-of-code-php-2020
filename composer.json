@@ -21,7 +21,7 @@
         }
     },
     "scripts": {
-        "cs-fixer": "vendor/bin/php-cs-fixer fix --config=php_cs.dist"
+        "cs-fixer": "vendor/bin/php-cs-fixer fix --config=.php-cs-fixer.dist.php"
     },
     "minimum-stability": "stable"
 }
