@@ -7,7 +7,7 @@ use App\Interfaces\DayInterface;
 
 uses()->beforeEach(function (): void {
     /* @var DayInterface day */
-    $this->day = DayFactory::create(3);
+    $this->day = DayFactory::create(getDayFromFile(__FILE__));
 });
 
 test('solves part1')

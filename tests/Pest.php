@@ -2,6 +2,13 @@
 
 declare(strict_types=1);
 
+function getDayFromFile(string $file): ?int
+{
+    preg_match('/Day(\d{1,2})Test/', $file, $matches);
+
+    return ($matches[1] ?? null) ? (int) $matches[1] : null;
+}
+
 function humanReadableBytes(int $bytes, ?int $precision = null): string
 {
     $units          = ['b', 'kb', 'mb', 'gb', 'tb', 'pb', 'eb', 'zb', 'yb'];

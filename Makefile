@@ -47,6 +47,7 @@ docker run --rm -it \
 	--name "$(image-name)-composer" \
 	-u "$(uid):$(gid)" \
 	-v "$(PWD):/app" \
+	-w /app \
 	composer
 endef
 
@@ -71,7 +72,7 @@ shell: ## Launch a shell into the docker container
 
 xdebug: ## Launch a php container with xdebug (port 10000)
 	@echo "=== Xdebug Launch Instructions ===\nAt the prompt type:\nvendor/bin/pest\n\n"
-	$(DOCKER_RUN_PHP_XDEBUG) /bin/bash
+	@$(DOCKER_RUN_PHP_XDEBUG) /bin/bash
 
 cleanup: ## remove all docker images
 	docker rm $$(docker ps -a | grep '$(image-name)' | awk '{print $$1}') --force

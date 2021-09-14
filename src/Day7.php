@@ -9,7 +9,6 @@ use App\Interfaces\DayInterface;
 class Day7 extends DayBehaviour implements DayInterface
 {
     protected array $bags = [];
-    protected array $tree = [];
 
     protected function getBags(): array
     {
@@ -70,13 +69,11 @@ class Day7 extends DayBehaviour implements DayInterface
     {
         $child = $this->bags[$targetBag] ?? [];
 
-        $data = array_map(fn ($childBag, $count) => [
+        return array_map(fn ($childBag, $count) => [
                 'bag'   => $childBag,
                 'count' => $count,
                 'child' => $this->bagTraverse($childBag),
             ], array_keys($child), $child);
-
-        return $data;
     }
 
     protected function bagCount(array $bagTree, $parentBagCount = 1): array
@@ -88,9 +85,7 @@ class Day7 extends DayBehaviour implements DayInterface
 
             /** @noinspection SlowArrayOperationsInLoopInspection */
             $bagCount = array_merge($bagCount,
-                ...array_map(function ($childBags) use ($currCount) {
-                    return $this->bagCount([$childBags], $currCount);
-                }, $tree['child']));
+                ...array_map(fn ($childBags) => $this->bagCount([$childBags], $currCount), $tree['child']));
         }
 
         return $bagCount;

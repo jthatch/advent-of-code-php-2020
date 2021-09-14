@@ -12,10 +12,10 @@ uses()->beforeEach(function (): void {
 
 test('solves part1')
     ->expect(fn () => $this->day->solvePart1())
-    ->toBe(658899)
+    ->toBe(1753)
 ;
 
-test('solves part2')
+test('solves part2')->skip()
     ->expect(fn () => $this->day->solvePart2())
-    ->toBe(155806250)
+    ->toBe(1250)
 ;
