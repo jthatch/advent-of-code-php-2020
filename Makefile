@@ -58,7 +58,7 @@ tests: ## runs each days pest tests within a docker container
 ifneq ("$(wildcard vendor)", "")
 	$(DOCKER_RUN_PHP) vendor/bin/pest --testdox
 else
-	@echo "\nFirst run detected! No vendor/ folder found, running composer update...\n"
+	@echo -e "\nFirst run detected! No vendor/ folder found, running composer update...\n"
 	make composer
 	make tests
 endif
@@ -74,7 +74,7 @@ shell: ## Launch a shell into the docker container
 	$(DOCKER_RUN_PHP) /bin/bash
 
 xdebug: ## Launch a php container with xdebug (port 10000)
-	@echo "=== Xdebug Launch Instructions ===\nAt the prompt type:\nvendor/bin/pest\n\n"
+	@echo -e "=== Xdebug Launch Instructions ===\nAt the prompt type:\nvendor/bin/pest\n\n"
 	@$(DOCKER_RUN_PHP_XDEBUG) /bin/bash
 
 cleanup: ## remove all docker images
@@ -85,9 +85,9 @@ cs-fix: ## run php-cs-fixer
 
 day: ## Retrieves the latest day's input from server
 ifndef aocCookie
-	@echo "Missing AOC_COOKIE env\n\nPlease login to https://adventofcode.com/ and retrieve your session cookie."
-	@echo "Then set the environmental variable AOC_COOKIE. e.g. export AOC_COOKIE=53616c7465645f5f2b44c4d4742765e14...\n"
+	@echo -e "Missing AOC_COOKIE env\n\nPlease login to https://adventofcode.com/ and retrieve your session cookie."
+	@echo -e "Then set the environmental variable AOC_COOKIE. e.g. export AOC_COOKIE=53616c7465645f5f2b44c4d4742765e14...\n"
 else
-	@echo "Fetching latest input using day=$(latestDay) AOC_COOKIE=$(aocCookie)"
+	@echo -e "Fetching latest input using day=$(latestDay) AOC_COOKIE=$(aocCookie)"
 	@curl -s --location --request GET 'https://adventofcode.com/2020/day/$(latestDay)/input' --header 'Cookie: session=$(aocCookie)' -o ./input/day$(latestDay).txt && echo "./src/day$(latestDay).txt downloaded" || echo "error downloading"
 endif

@@ -10,7 +10,7 @@ use App\Interfaces\DayInterface;
 
 class DayFactory
 {
-    protected const MAX_DAYS     = 20;
+    protected const MAX_DAYS     = 25;
     protected const CLASS_FORMAT = 'Day%d';
     protected const INPUT_FORMAT = __DIR__.'/../input/day%d.txt';
 
