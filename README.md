@@ -46,7 +46,6 @@ $ make
 # Current Day: 9
 #---------------------------------------------------------------------------
 help                           This help.
-latest-day                     echo latest day
 tests                          runs each days pest tests within a docker container
 composer                       Runs `composer update` on CWD, specify other commands via cmd=
 shell                          Launch a shell into the docker container

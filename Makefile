@@ -54,9 +54,6 @@ docker run --rm -it \
 	composer
 endef
 
-latest-day: ## echo latest day
-	@echo "latestDay is $(latestDay)"
-
 tests: ## runs each days pest tests within a docker container
 ifneq ("$(wildcard vendor)", "")
 	$(DOCKER_RUN_PHP) vendor/bin/pest --testdox
