@@ -1,4 +1,17 @@
+SHELL=bash
+# advent of code helpers
+# looks in src/ for any Day[N].php files, sorts for the highest and sets that value
+# When you move to a new day you would create the DayN.php file then run `make day`
+# to retrieve that input, storing it in ./input/day[N].txt
+# saves time
+OS_NAME := $(shell uname -s | tr A-Z a-z)
+latestDay :=$(shell if [[ "$(OS_NAME)" == "linux" ]]; then find src -maxdepth 1 -type f  \( -name "Day[0-9][0-9].php" -o -name "Day[0-9].php" \) -printf '%f\n' | sort -Vr | head -1 | grep -o '[0-9]\+' || echo "1";  else find src -maxdepth 1 -type f  \( -name "Day[0-9][0-9].php" -o -name "Day[0-9].php" \) -print0 | xargs -0 stat -f '%N ' | sort -Vr | head -1 | grep -o '[0-9]\+' || echo "1"; fi)
+# in order to retrieve the Days input from the server you must login to adventofcode.com and grab the `session` cookie
+# then set export AOC_COOKIE=53616c7465645f5f2b44c4d4742765e14...
+aocCookie :=$(AOC_COOKIE)
+
 help: ## This help.
+	@printf "\033[32m#---------------------------------------------------------------------------\n# Advent of Code 2020 - James Thatcher\n# Current Day:\033[33m $(latestDay)\033[32m\n#---------------------------------------------------------------------------\033[0m\n"
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
 .DEFAULT_GOAL := help
@@ -9,16 +22,6 @@ image-name :=aoc-2020
 php-image  :=php:8-cli
 uid        :=$(shell id -u)
 gid        :=$(shell id -g)
-
-# advent of code helpers
-# looks in src/ for any Day[N].php files, sorts for the highest and sets that value
-# When you move to a new day you would create the DayN.php file then run `make day`
-# to retrieve that input, storing it in ./input/day[N].txt
-# saves time
-latestDay :=$(shell find src -maxdepth 1 -type f  \( -name "Day[0-9][0-9].php" -o -name "Day[0-9].php" \) -print0 | xargs -0 stat -f '%N ' | sort -Vr | head -1 | grep -o '[0-9]\+' || echo "1")
-# in order to retrieve the Days input from the server you must login to adventofcode.com and grab the `session` cookie
-# then set export AOC_COOKIE=53616c7465645f5f2b44c4d4742765e14...
-aocCookie :=$(AOC_COOKIE)
 
 # define our reusable docker run commands
 define DOCKER_RUN_PHP
@@ -50,6 +53,9 @@ docker run --rm -it \
 	-w /app \
 	composer
 endef
+
+latest-day: ## echo latest day
+	@echo "latestDay is $(latestDay)"
 
 tests: ## runs each days pest tests within a docker container
 ifneq ("$(wildcard vendor)", "")
@@ -86,5 +92,5 @@ ifndef aocCookie
 	@echo "Then set the environmental variable AOC_COOKIE. e.g. export AOC_COOKIE=53616c7465645f5f2b44c4d4742765e14...\n"
 else
 	@echo "Fetching latest input using day=$(latestDay) AOC_COOKIE=$(aocCookie)"
-	curl -s --location --request GET 'https://adventofcode.com/2020/day/$(latestDay)/input' --header 'Cookie: session=$(aocCookie)' -o ./input/day$(latestDay).txt && echo "./src/day$(latestDay).txt downloaded" || echo "error downloading"
+	@curl -s --location --request GET 'https://adventofcode.com/2020/day/$(latestDay)/input' --header 'Cookie: session=$(aocCookie)' -o ./input/day$(latestDay).txt && echo "./src/day$(latestDay).txt downloaded" || echo "error downloading"
 endif

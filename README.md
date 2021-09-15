@@ -40,12 +40,18 @@ that will automatically fetch the input from [adventofcode](https://adventofcode
 
 ### Full make commands
 ```shell
+$ make
+#---------------------------------------------------------------------------
+# Advent of Code 2020 - James Thatcher
+# Current Day: 9
+#---------------------------------------------------------------------------
 help                           This help.
-tests                          runs easy days pest tests within a docker container
+latest-day                     echo latest day
+tests                          runs each days pest tests within a docker container
 composer                       Runs `composer update` on CWD, specify other commands via cmd=
 shell                          Launch a shell into the docker container
-xdebug                         Launch a php container with xdebug (PHP_IDE_CONFIG=aoc-2020, port 10000)
-cleanup                        remove aoc docker images
+xdebug                         Launch a php container with xdebug (port 10000)
+cleanup                        remove all docker images
 cs-fix                         run php-cs-fixer
 day                            Retrieves the latest day's input from server
 ```
