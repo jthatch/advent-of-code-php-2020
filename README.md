@@ -4,7 +4,7 @@
 ### Solutions
 > 🎄 [Day 1](/src/Day1.php) 🎅 [Day 2](/src/Day2.php) ☃️ [Day 3](/src/Day3.php) 🦌 [Day 4](/src/Day4.php) 🍪 [Day 5](/src/Day5.php) 
 > 🥛 [Day 6](/src/Day6.php) 🧦 [Day 7](/src/Day7.php) 🎁 [Day 8](/src/Day8.php)   
-> ⛄ [Day 9](/src/Day9.php)
+> ⛄ [Day 9](/src/Day9.php) 🛐 [Day 10](/src/Day10.php)
 
 ### About
 
@@ -43,7 +43,7 @@ that will automatically fetch the input from [adventofcode](https://adventofcode
 $ make
 #---------------------------------------------------------------------------
 # Advent of Code 2020 - James Thatcher
-# Current Day: 9
+# Current Day: N
 #---------------------------------------------------------------------------
 help                           This help.
 tests                          runs each days pest tests within a docker container
