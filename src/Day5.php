@@ -31,7 +31,8 @@ class Day5 extends DayBehaviour implements DayInterface
                         // take the upper half
                         ? [(int) ($rowRange[0] + ceil(abs($rowRange[0] - $rowRange[1]) / 2)), $rowRange[1]]
                         // final row, keep higher of the two
-                        : max($rowRange)
+                        : max($rowRange),
+                    default => null
                 };
             }, array_keys($rowSeatGrid), $rowSeatGrid);
 
@@ -49,7 +50,8 @@ class Day5 extends DayBehaviour implements DayInterface
                         // take the upper half
                         ? [(int) ($colRange[0] + ceil(abs($colRange[0] - $colRange[1]) / 2)), $colRange[1]]
                         // final col, keep higher of the two
-                        : max($colRange)
+                        : max($colRange),
+                    default => null
                 };
             }, array_keys($colSeatGrid), $colSeatGrid);
 

@@ -23,17 +23,14 @@ class Day9 extends DayBehaviour implements DayInterface
         // skipping the preamble (we'll retrieve the last 5 inside the loop) loop over every number
         for ($i = 25; $i < $inputLen; ++$i) {
             $currentNum = $input[$i];
-            $last5      = array_filter($input, static function (int $k) use ($i) { return $k < $i && ($i - 25) <= $k; }, ARRAY_FILTER_USE_KEY);
+            $last5      = array_filter($input, static function (int $k) use ($i): bool { return $k < $i && ($i - 25) <= $k; }, ARRAY_FILTER_USE_KEY);
 
             // find 2 numbers in the $last5 that sum to $n and aren't equal
             // we can reuse code from Day 1
-            $sum = array_filter($last5, static function (int $num1) use ($currentNum, $last5) {
+            $sum = array_filter($last5, static function (int $num1) use ($currentNum, $last5): bool {
                 $num2 = $currentNum - $num1;
-                if ($num1 !== $num2 && $currentNum === $num1 + $num2 && in_array($num2, $last5, true)) {
-                    return $num1;
-                }
 
-                return false;
+                return $num1 !== $num2 && $currentNum === $num1 + $num2 && in_array($num2, $last5, true);
             });
 
             if (empty($sum)) {

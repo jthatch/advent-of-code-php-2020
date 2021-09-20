@@ -63,20 +63,20 @@ class Day7 extends DayBehaviour implements DayInterface
      *
      * @param string $targetBag
      *
-     * @return array|null
+     * @return array
      */
-    protected function bagTraverse(string $targetBag): ?array
+    protected function bagTraverse(string $targetBag): array
     {
         $child = $this->bags[$targetBag] ?? [];
 
-        return array_map(fn ($childBag, $count) => [
+        return array_map(fn (string $childBag, int $count): array => [
                 'bag'   => $childBag,
                 'count' => $count,
                 'child' => $this->bagTraverse($childBag),
             ], array_keys($child), $child);
     }
 
-    protected function bagCount(array $bagTree, $parentBagCount = 1): array
+    protected function bagCount(array $bagTree, int $parentBagCount = 1): array
     {
         $bagCount = [];
         foreach ($bagTree as $tree) {
@@ -103,6 +103,6 @@ class Day7 extends DayBehaviour implements DayInterface
         $bagTree    = $this->bagTraverse('shiny gold');
         $bagCount   = $this->bagCount($bagTree);
 
-        return array_sum($bagCount);
+        return (int) array_sum($bagCount);
     }
 }

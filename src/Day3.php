@@ -16,7 +16,7 @@ class Day3 extends DayBehaviour implements DayInterface
         $hitTrees = 0;
         $x        = 3; // starting point
         //printf(implode('', $map[0])."\n");
-        $rowLength = count(array_shift($map));
+        $rowLength = count(array_shift($map) ?? []);
         foreach ($map as $row) {
             $pixel = $row[$x];
             $hitTrees += $pixel === $tree ? 1 : 0;
@@ -63,6 +63,6 @@ class Day3 extends DayBehaviour implements DayInterface
             $hitsTotal[] = $hitTrees;
         }
 
-        return array_product($hitsTotal);
+        return (int) array_product($hitsTotal);
     }
 }
