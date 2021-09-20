@@ -83,6 +83,9 @@ cleanup: ## remove all docker images
 cs-fix: ## run php-cs-fixer
 	$(DOCKER_RUN_COMPOSER) cs-fixer
 
+phpstan: ## run phpstan
+	$(DOCKER_RUN_COMPOSER) phpstan
+
 day: ## Retrieves the latest day's input from server
 ifndef aocCookie
 	@echo -e "Missing AOC_COOKIE env\n\nPlease login to https://adventofcode.com/ and retrieve your session cookie."
