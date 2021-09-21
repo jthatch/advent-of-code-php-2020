@@ -50,6 +50,7 @@ docker run --rm -it \
 	--name "$(image-name)-composer" \
 	-u "$(uid):$(gid)" \
 	-v "$(PWD):/app" \
+	-v "/tmp:/tmp" \
 	-w /app \
 	composer
 endef

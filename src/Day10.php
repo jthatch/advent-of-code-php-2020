@@ -12,65 +12,99 @@ class Day10 extends DayBehaviour implements DayInterface
      * Find a chain that uses all of your adapters to connect the charging outlet to your device's built-in adapter
      * and count the joltage differences between the charging outlet, the adapters, and your device.
      * What is the number of 1-jolt differences multiplied by the number of 3-jolt differences?
-     * rules:
-     *  - need to use every device
-     *  - we always want to use the device with the lowest difference between joltage.
      *
      * @return int|null
      */
     public function solvePart1(): ?int
     {
-        $input = $this->inputAsInt();
+        // convert input to array of ints
+        $input = array_map(static fn (string $s): int => (int) trim($s), $this->input);
+        // add the initial starting joltage and the adapter max
+        $input = array_merge([0], $input, [max($input) + 3]);
         sort($input);
-        $oneJoltDiff   = [];
-        $threeJoltDiff = [];
-        $joltage       = 0;
-        foreach ($input as $deviceJoltage) {
-            if ($deviceJoltage === ($joltage + 1)) {
-                $oneJoltDiff[] = $deviceJoltage;
-            } elseif ($deviceJoltage === ($joltage + 3)) {
-                $threeJoltDiff[] = $deviceJoltage;
-            }
-            $joltage = $deviceJoltage;
-        }
-        // add final 3 jolt
-        $threeJoltDiff[] = max($input) + 3;
+        // create a histogram based on the difference between each number
+        /** @param array<int, int> $histogram */
+        $histogram = array_count_values(
+            array_map(
+                static fn (int $c, ?int $n) => ($n ?? $c) - $c, // find the delta between (c)urrent and (n)ext values in array
+                $input, array_slice($input, 1)));
 
-        return count($oneJoltDiff) * count($threeJoltDiff);
+        // return the number of 1-jolt x 3-jolts
+        return $histogram[1] * $histogram[3];
     }
 
     /**
+     * What is the total number of distinct ways you can arrange the adapters to connect the charging outlet to your device?
+     *
      * @return int|null
      */
     public function solvePart2(): ?int
     {
-        /*$this->input = [
-                    '16',
-                    '10',
-                    '15',
-                    '5',
-                    '1',
-                    '11',
-                    '7',
-                    '19',
-                    '6',
-                    '12',
-                    '4',
-                ];*/
-        /*while(true) {
-            $possibleDevices = array_filter($input, static fn(int $i, int $k) => $i < ($joltage + 3), ARRAY_FILTER_USE_BOTH);
-            if (1 === count($possibleDevices)) {
-                // now set
+        //       3  2          2
+        //       x  x          x
+        /*
+                  [5, 6]       [11]
+        (0), 1, 4, 5, 6, 7, 10, 11, 12, 15, 16, 19, (22) 13 hops max 10 hops min = 3 diff
+        (0), 1, 4, 5, 6, 7, 10, 12, 15, 16, 19, (22)      11
+        (0), 1, 4, 5, 7, 10, 11, 12, 15, 16, 19, (22)     6
+        (0), 1, 4, 6, 7, 10, 11, 12, 15, 16, 19, (22)     5
+        (0), 1, 4, 5, 7, 10, 12, 15, 16, 19, (22)         6,11
+        (0), 1, 4, 6, 7, 10, 12, 15, 16, 19, (22)         5,11
+        (0), 1, 4, 7, 10, 11, 12, 15, 16, 19, (22)        5,6
+        (0), 1, 4, 7, 10, 12, 15, 16, 19, (22)            5,6,11
+         */
+        // 1, 4, 5, 6, 7, 10, 11, 12, 15, 16, 19 (11)
+        // 1, 4, 5, 6, 7, 10, 12, 15, 16, 19 (11)
+        // 1, 4, 5, 7, 10, 12, 15, 16, 19 (11)
+        // 1, 4, 7, 10, 12, 15, 16, 19           (8)
+        //$this->input = ['16','10','15','5','1','11','7','19','6','12','4'];
+        $this->input = ['28', '33', '18', '42', '31', '14', '46', '20', '48', '47', '24', '23', '49', '45', '19', '38', '39', '11', '1', '32', '25', '35', '8', '17', '7', '9', '4', '2', '34', '10', '3'];
+        $input       = array_map(static fn (string $s): int => (int) trim($s), $this->input);
+        sort($input);
+        // todo start at end -1, calculate how many paths there are and continue down
+        $joltage  = 0;
+        $distinct = [];
+        $max      = $input[count($input) - 1];
+        $count    = 0;
+        $disCount = 1;
+        $shortest = [];
+        $longest  = [];
+        while (true) {
+            $possibleDevices = array_filter($input, static fn (int $i) => $i > $joltage && $i <= ($joltage + 3));
+            // take the highest possible joltage
+            if (!empty($possibleDevices)) {
+                $longest = array_merge($longest, $possibleDevices);
             }
-            foreach($possibleDevices as $deviceJoltage) {
+            $joltage    = array_pop($possibleDevices);
+            $shortest[] = $joltage;
+            // add any left over to our array
+            if (!empty($possibleDevices)) {
+                /** @noinspection SlowArrayOperationsInLoopInspection */
+                $distinct = array_merge($distinct, $possibleDevices ?? []);
 
+                //$joltage = array_pop($possibleDevices);
+                ++$disCount;
             }
-
-
-        }*/
-
-        // rules, given an input, it can go 1-3 volts lower, and 3 volts higher
-        // e.g. input 5: valid: 2,3,4,8
+            /*if (!empty($possibleDevices)) {
+                // @noinspection SlowArrayOperationsInLoopInspection
+                $distinct = array_merge($distinct, [$possibleDevices]);
+            }*/
+            ++$count;
+            if ($joltage >= $max) {
+                break;
+            }
+        }
+        // find the power set
+        //$ans = count($pc_array_power_set($distinct));
+        //echo implode(',', $distinct) . "\n";
+        //return null;
+        //$ans = 2 ** count($distinct);
+        //return $ans;
+        $ans = 2 ** 3 * $disCount ** (count($distinct) - $disCount);
+        //$ans = 2 ** count($distinct);
+        // 549755813888 too low
+        // 68719476736 too low
+        //return $ans;
         return null;
     }
 }
