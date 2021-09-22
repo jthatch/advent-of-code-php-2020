@@ -33,6 +33,39 @@ class Day10 extends DayBehaviour implements DayInterface
         return $histogram[1] * $histogram[3];
     }
 
+    public function arrangementsFromOffset(int $offset): int
+    {
+        $sum        = 0;
+        $sums       = [];
+        $inputTotal = count($this->input);
+        if ($offset >= $inputTotal) {
+            return 1;
+        }
+
+        for (; $offset < $inputTotal; ++$offset) {
+            $range = range($offset + 1, min(count($this->input) - 1, $offset + 4));
+            /** @noinspection SlowArrayOperationsInLoopInspection */
+            $sums = array_merge($sums, ...array_map(function (int $j) use ($offset) {
+                $offsetInput = $this->input[$offset];
+                $jInput = $this->input[$j] ?? 0;
+                if (3 <= ($jInput - $offsetInput)) {
+                    return [$this->arrangementsFromOffset($j)];
+                }
+
+                return [];
+            }, $range));
+
+            $sum += array_sum($sums);
+        }
+
+        return $sum;
+        /*foreach(range($offset + 1, min(count($this->input), $offset + 4)) as $j) {
+            if (3 <= ($this->input[$j] - $this->input[$offset])) {
+                return $this->arrangementsFromOffset($j);
+            }
+        }*/
+    }
+
     /**
      * What is the total number of distinct ways you can arrange the adapters to connect the charging outlet to your device?
      *
@@ -57,10 +90,12 @@ class Day10 extends DayBehaviour implements DayInterface
         // 1, 4, 5, 6, 7, 10, 12, 15, 16, 19 (11)
         // 1, 4, 5, 7, 10, 12, 15, 16, 19 (11)
         // 1, 4, 7, 10, 12, 15, 16, 19           (8)
-        //$this->input = ['16','10','15','5','1','11','7','19','6','12','4'];
+        $this->input = ['16', '10', '15', '5', '1', '11', '7', '19', '6', '12', '4'];
+        $this->input = array_map(static fn (string $s): int => (int) trim($s), $this->input);
+        sort($this->input);
+
+        return $this->arrangementsFromOffset(0);
         $this->input = ['28', '33', '18', '42', '31', '14', '46', '20', '48', '47', '24', '23', '49', '45', '19', '38', '39', '11', '1', '32', '25', '35', '8', '17', '7', '9', '4', '2', '34', '10', '3'];
-        $input       = array_map(static fn (string $s): int => (int) trim($s), $this->input);
-        sort($input);
         // todo start at end -1, calculate how many paths there are and continue down
         $joltage  = 0;
         $distinct = [];

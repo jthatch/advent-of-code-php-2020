@@ -9,12 +9,12 @@
     "type": "project",
     "require": {
         "php": "^8.0",
-        "phpstan/phpstan": "^0.12.99",
         "phpstan/phpstan-phpunit": "^0.12.22",
         "symplify/phpstan-extensions": "^9.4"
     },
     "require-dev": {
         "pestphp/pest": "^v1.18.0",
+        "phpstan/phpstan": "^0.12.99",
         "friendsofphp/php-cs-fixer": "^v3.1.0"
     },
     "autoload": {
