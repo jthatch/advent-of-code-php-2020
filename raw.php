@@ -1,13 +1,10 @@
 <?php
-
 declare(strict_types=1);
 
-function getDayFromFile(string $file): ?int
-{
-    preg_match('/Day(\d{1,2})Test/', $file, $matches);
+use App\DayFactory;
+use App\Interfaces\DayInterface;
 
-    return ($matches[1] ?? null) ? (int) $matches[1] : null;
-}
+require 'vendor/autoload.php';
 
 function humanReadableBytes(int $bytes, ?int $precision = null): string
 {
@@ -21,15 +18,19 @@ function humanReadableBytes(int $bytes, ?int $precision = null): string
     return round($bytes, is_null($precision) ? $precisionUnits[$i] : $precision).$units[$i];
 }
 
-uses()->beforeEach(function (): void {
-    $this->startTime = microtime(true);
-    $this->startMemory = memory_get_usage();
-})->in(__DIR__);
+printf("Advent of code 2020 PHP solutions - github.com/jthatch\n\n");
 
-uses()->afterEach(function (): void {
+/** @var DayInterface $day */
+foreach(DayFactory::allAvailableDays() as $day) {
+    $startTime = microtime(true);
+    $startMemory = memory_get_usage();
+
+    printf("%s\n", $day->day());
+    printf("  part1: %s\n", $day->solvePart1());
+    printf("  part2: %s\n", $day->solvePart2());
     printf("\tCompleted in: %.6fs Memory: %s Peak: %s\n",
-        microtime(true) - $this->startTime,
-        humanReadableBytes(memory_get_usage() - $this->startMemory),
+        microtime(true) - $startTime,
+        humanReadableBytes(memory_get_usage() - $startMemory),
         humanReadableBytes(memory_get_peak_usage())
     );
-})->in(__DIR__);
+}

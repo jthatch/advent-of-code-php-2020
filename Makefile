@@ -64,6 +64,15 @@ else
 	make tests
 endif
 
+raw: ## runs each days solution without test framework
+ifneq ("$(wildcard vendor)", "")
+	$(DOCKER_RUN_PHP) php raw.php
+else
+	@echo -e "\nFirst run detected! No vendor/ folder found, running composer update...\n"
+	make composer
+	make raw
+endif
+
 composer: ## Runs `composer update` on CWD, specify other commands via cmd=
 ifdef cmd
 	$(DOCKER_RUN_COMPOSER) $(cmd)

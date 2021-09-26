@@ -9,4 +9,9 @@ abstract class DayBehaviour
     public function __construct(protected array $input)
     {
     }
+
+    public function day(): string
+    {
+        return (new \ReflectionClass($this))->getShortName();
+    }
 }

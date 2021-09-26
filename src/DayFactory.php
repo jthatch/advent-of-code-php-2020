@@ -19,11 +19,22 @@ class DayFactory
         $dayClassName = static::getDayClass($dayNumber);
         $dayInputName = static::getDayInput($dayNumber);
 
-        $dayInput = file($dayInputName) // this includes new lines as we want the raw input
+        $dayInput = @file($dayInputName) // this includes new lines as we want the raw input
             ?? throw new DayInputNotFoundException("Input file not found: {$dayInputName}", $dayNumber);
 
         return new $dayClassName($dayInput)
             ?? throw new DayClassNotFoundException("Missing day class: {$dayClassName}");
+    }
+
+    public static function allAvailableDays(): \Generator
+    {
+        foreach (range(1, static::MAX_DAYS) as $dayNumber) {
+            try {
+                yield static::create($dayNumber);
+            } catch (\Exception|\Error) {
+                break;
+            }
+        }
     }
 
     public static function createAllDaysCompleted(): array
