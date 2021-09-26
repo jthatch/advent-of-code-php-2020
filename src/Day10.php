@@ -57,8 +57,7 @@ class Day10 extends DayBehaviour implements DayInterface
             array_slice($this->input, $offset + 1, $offset + 4, true),
             static fn (int $v) => ($v - $value) <= 3);
         // cache the offset, only way this completes in time
-        $this->cache[$offset] ??=
-            array_sum(array_map(fn (int $k) => $this->adapterTraverse($k), array_keys($nodes)));
+        $this->cache[$offset] ??= array_sum(array_map(fn (int $k) => $this->adapterTraverse($k), array_keys($nodes)));
 
         return $this->cache[$offset];
     }

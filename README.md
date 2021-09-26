@@ -21,8 +21,9 @@ It has many helpful features to make tackling each Days' challenge as easy as po
 that will automatically fetch the input from [adventofcode](https://adventofcode.com)'s servers along with an xdebug instance for debugging those particularly difficult challenges.
 
 ### Instructions
-- **Run all tests**  
- `make tests`  
+- **Run all days**  
+ `make tests`  -- run within the Pest framework  
+ `make run`  -- run without a framework
   
   
 - **Use XDebug**  

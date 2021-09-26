@@ -11,7 +11,7 @@ latestDay :=$(shell if [[ "$(OS_NAME)" == "linux" ]]; then find src -maxdepth 1 
 aocCookie :=$(AOC_COOKIE)
 
 help: ## This help.
-	@printf "\033[32m#---------------------------------------------------------------------------\n# Advent of Code 2020 - James Thatcher\n# Current Day:\033[33m $(latestDay)\033[32m\n#---------------------------------------------------------------------------\033[0m\n"
+	@printf "\033[32m---------------------------------------------------------------------------\n  Advent of Code 2020 - James Thatcher\n  Current Day:\033[33m $(latestDay)\033[32m\n---------------------------------------------------------------------------\033[0m\n"
 	@awk 'BEGIN {FS = ":.*?## "} /^[a-zA-Z_-]+:.*?## / {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}' $(MAKEFILE_LIST)
 
 .DEFAULT_GOAL := help
@@ -55,6 +55,15 @@ docker run --rm -it \
 	composer
 endef
 
+run: ## runs each days solution without test framework
+ifneq ("$(wildcard vendor)", "")
+	$(DOCKER_RUN_PHP) php -dzend_extension=opcache.so -dopcache.enable_cli=1 -dopcache.jit_buffer_size=500000000 -dopcache.jit=1235 run.php
+else
+	@echo -e "\nFirst run detected! No vendor/ folder found, running composer update...\n"
+	make composer
+	make run
+endif
+
 tests: ## runs each days pest tests within a docker container
 ifneq ("$(wildcard vendor)", "")
 	$(DOCKER_RUN_PHP) vendor/bin/pest --testdox
@@ -62,15 +71,6 @@ else
 	@echo -e "\nFirst run detected! No vendor/ folder found, running composer update...\n"
 	make composer
 	make tests
-endif
-
-raw: ## runs each days solution without test framework
-ifneq ("$(wildcard vendor)", "")
-	$(DOCKER_RUN_PHP) php raw.php
-else
-	@echo -e "\nFirst run detected! No vendor/ folder found, running composer update...\n"
-	make composer
-	make raw
 endif
 
 composer: ## Runs `composer update` on CWD, specify other commands via cmd=
