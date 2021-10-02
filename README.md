@@ -36,7 +36,7 @@ If you fancy having a go at the challenges yourself feel free to use this repo a
 `make run day={N}` e.g. `make run day=1`
 
 **Use XDebug**  
-`make xdebug` at the shell type: `vendor/bin/pest`  
+`make xdebug`  
 
 IDE settings:
 - `10000` - xdebug port 

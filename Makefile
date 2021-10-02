@@ -90,7 +90,7 @@ shell: ## Launch a shell into the docker container
 	$(DOCKER_RUN_PHP) /bin/bash
 
 xdebug: ## Launch a php container with xdebug (port 10000)
-	@$(DOCKER_RUN_PHP_XDEBUG) php run.php
+	@$(DOCKER_RUN_PHP_XDEBUG) php run.php $(onlyThisDay)
 
 xdebug-shell: ## Launch a php container with xdebug in a shell (port 10000)
 	@echo -e "=== Xdebug Launch Instructions ===\nAt the prompt type:\nphp run.php [day]\n\n"
