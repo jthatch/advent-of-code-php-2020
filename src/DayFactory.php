@@ -19,8 +19,9 @@ class DayFactory
         $dayClassName = static::getDayClass($dayNumber);
         $dayInputName = static::getDayInput($dayNumber);
 
-        $dayInput = @file($dayInputName) // this includes new lines as we want the raw input
-            ?? throw new DayInputNotFoundException("Input file not found: {$dayInputName}", $dayNumber);
+        $dayInput = file_exists($dayInputName)
+            ? file($dayInputName) // this includes new lines as we want the raw input
+            : throw new DayInputNotFoundException("Input file not found: {$dayInputName}", $dayNumber);
 
         return new $dayClassName($dayInput)
             ?? throw new DayClassNotFoundException("Missing day class: {$dayClassName}");
@@ -32,23 +33,9 @@ class DayFactory
             try {
                 yield static::create($dayNumber);
             } catch (\Exception|\Error) {
-                break;
+                break; // ignore days we haven't solved yet
             }
         }
-    }
-
-    public static function createAllDaysCompleted(): array
-    {
-        $daysCompleted = [];
-        foreach (range(1, static::MAX_DAYS) as $dayNumber) {
-            try {
-                $daysCompleted[] = static::create($dayNumber);
-            } catch (DayClassNotFoundException|DayInputNotFoundException) {
-                break;
-            }
-        }
-
-        return $daysCompleted;
     }
 
     private static function getDayClass(int $dayNumber): string
