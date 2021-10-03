@@ -8,105 +8,117 @@ use App\Interfaces\DayInterface;
 
 class Day11 extends DayBehaviour implements DayInterface
 {
-    protected int $i = 0;
+    protected array $seats;
+    private int $yMax;
+    private int $xMax;
+    // [[y,x],..] each of the 8 possible adjacent seats, starting top left going clockwise
+    private array $adjacent = [[-1, -1], [-1, 0], [-1, 1], [0, 1], [1, 1], [1, 0], [1, -1], [0, -1]];
 
-    /**
-     * All decisions are based on the number of occupied seats adjacent to a given seat
-     * (one of the eight positions immediately up, down, left, right, or diagonal from the seat).
-     * The following rules are applied to every seat simultaneously:.
-     * Rules:
-     * If a seat is empty (L) and there are no occupied seats adjacent to it, the seat becomes occupied.
-     * If a seat is occupied (#) and four or more seats adjacent to it are also occupied, the seat becomes empty.
-     *
-     * Simulate your seating area by applying the seating rules repeatedly until no seats change state. How many seats end up occupied?
-     *
-     * @return int|null
-     */
     public function solvePart1(): ?int
     {
-        /*$this->input = [
-            'L.LL.LL.LL',
-            'LLLLLLL.LL',
-            'L.L.L..L..',
-            'LLLL.LL.LL',
-            'L.LL.LL.LL',
-            'L.LLLLL.LL',
-            '..L.L.....',
-            'LLLLLLLLLL',
-            'L.LLLLLL.L',
-            'L.LLLLL.LL',
-        ];*/
-        // convert into [y][x] array
-        $this->input      = array_map(static fn (string $s): array => str_split(trim($s)), $this->input);
-        $finalSeatingPlan = $this->seatTraverse();
-        $occupied         = array_filter(array_merge(...$finalSeatingPlan), static fn (string $s) => '#' === $s);
+        // convert into [y][x] grid
+        $this->seats = array_map(static fn (string $s): array => str_split(trim($s)), $this->input);
+        $this->yMax  = count($this->seats); // rows
+        $this->xMax  = count($this->seats[0]); // seats
 
-        return count($occupied);
+        return count($this->seatTraversePart1());
     }
 
-    protected function seatTraverse(?array $seatLayout = null): array
+    protected function seatTraversePart1(?array $seatLayout = null): array
     {
-        ++$this->i;
         // final recursive check
-        if ($seatLayout === $this->input) {
-            return $this->input;
+        if ($seatLayout === $this->seats) {
+            // return array of occupied seats
+            return array_filter(array_merge(...$seatLayout), static fn (string $s) => '#' === $s);
         }
 
         // if we haven't been seeded then start with input
-        $this->input = $seatLayout ?? $this->input;
+        $this->seats = $seatLayout ?? $this->seats;
 
-        $newInput = $this->input; // clone it, we'll make all changes to the new input
-        for ($y = 0, $yMax = count($this->input); $y < $yMax; ++$y) {
-            for ($x = 0, $xMax = count($this->input[$y]); $x < $xMax; ++$x) {
-                $adjacentSeats = [
-                    // above
-                    $this->input[$y - 1][$x - 1] ?? '',
-                    $this->input[$y - 1][$x] ?? '',
-                    $this->input[$y - 1][$x + 1] ?? '',
-                    // below
-                    $this->input[$y + 1][$x - 1] ?? '',
-                    $this->input[$y + 1][$x] ?? '',
-                    $this->input[$y + 1][$x + 1] ?? '',
-                    // left
-                    $this->input[$y][$x - 1] ?? '',
-                    // right
-                    $this->input[$y][$x + 1] ?? '',
-                ];
-                $occupiedAdjacent = array_filter($adjacentSeats, static fn (string $v) => '#' === $v);
-                $seat             = $this->input[$y][$x];
-                switch ($seat) { // faster than using match
-                    case '.':
-                        continue 2;
-                    case 'L':
-                        if (empty($occupiedAdjacent)) {
-                            $newInput[$y][$x] = '#';
-                        }
-                        break;
-                    case '#':
-                        if (4 <= count($occupiedAdjacent)) {
-                            $newInput[$y][$x] = 'L';
-                        }
-                        break;
+        $newInput = $this->seats; // clone it, we'll make all changes to the new input
+        for ($y = 0; $y < $this->yMax; ++$y) {
+            for ($x = 0; $x < $this->xMax; ++$x) {
+                $seat = $this->seats[$y][$x];
+
+                if ('.' === $seat) { // skip empty seat, better to do this early to avoid additional computation
+                    continue;
+                }
+
+                // loop over our adjacent positions, filtering only occupied seats
+                $occupiedAdjacent = count(array_filter($this->adjacent, fn (array $pos) => '#' === ($this->seats[$y + $pos[0]][$x + $pos[1]] ?? '')));
+
+                if ('L' === $seat && 0 === $occupiedAdjacent) {
+                    $newInput[$y][$x] = '#';
+                } elseif ('#' === $seat && 4 <= $occupiedAdjacent) {
+                    $newInput[$y][$x] = 'L';
                 }
             }
-            /*printf("y: %d\n%s\n%s\n",
-                $y,
-                implode('', $this->input[$y]),
-                implode('', $newInput[$y]),
-            );*/
         }
-        /*printf("%d: new: %d old: %d\n",
-            $this->i,
-            count(array_filter(array_merge(...$newInput), static fn (string $s) => '#' === $s)),
-            count(array_filter(array_merge(...$this->input), static fn (string $s) => '#' === $s)),
-        );*/
 
-        return $this->seatTraverse($newInput);
+        return $this->seatTraversePart1($newInput);
     }
 
     public function solvePart2(): ?int
     {
-        // TODO: Implement solvePart2() method.
-        return null;
+        $this->seats = array_map(static fn (string $s): array => str_split(trim($s)), $this->input);
+        $this->yMax  = count($this->seats); // rows
+        $this->xMax  = count($this->seats[0]); // seats
+
+        return count($this->seatTraversePart2());
+    }
+
+    protected function seatTraversePart2(?array $seatLayout = null): array
+    {
+        // final recursive check
+        if ($seatLayout === $this->seats) {
+            // return array of occupied seats
+            return array_filter(array_merge(...$seatLayout), static fn (string $s) => '#' === $s);
+        }
+
+        // if we haven't been seeded then start with input
+        $this->seats = $seatLayout ?? $this->seats;
+
+        $newInput = $this->seats; // clone it, we'll make all changes to the new input
+        for ($y = 0; $y < $this->yMax; ++$y) {
+            for ($x = 0; $x < $this->xMax; ++$x) {
+                $seat = $this->seats[$y][$x];
+
+                if ('.' === $seat) { // skip empty seat
+                    continue;
+                }
+
+                // adjacent in part 2 is trickier, it's now line of sight. We must now traverse
+                // in the adjacent direction until we encounter a chair or the wall
+                $occupiedAdjacent = 0;
+                array_filter($this->adjacent, function (array $pos) use ($y, $x, &$occupiedAdjacent) {
+                    while (true) {
+                        // keep travelling in the adjacent direction
+                        $y += $pos[0];
+                        $x += $pos[1];
+                        // determine if we hit a wall
+                        if ($y < 0 || $x < 0 || $y > ($this->yMax - 1) || $x > ($this->xMax - 1)) {
+                            break; // we hit a wall
+                        }
+                        $seatAtPos = ($this->seats[$y][$x] ?? '');
+                        if ('#' === $seatAtPos) {
+                            ++$occupiedAdjacent;
+                        }
+                        if ('.' !== $seatAtPos) {
+                            break;
+                        }
+                    }
+
+                    return $occupiedAdjacent > 0;
+                });
+
+                if ('L' === $seat && 0 === $occupiedAdjacent) {
+                    $newInput[$y][$x] = '#';
+                } elseif ('#' === $seat && 5 <= $occupiedAdjacent) {
+                    $newInput[$y][$x] = 'L';
+                }
+            }
+        }
+
+        return $this->seatTraversePart2($newInput);
     }
 }

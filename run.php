@@ -18,8 +18,8 @@ printf("\033[32m----------------------------------------------------------------
 
 /** @var DayInterface $day */
 foreach ($dayGenerator as $day) {
-    $startTime   = microtime(true);
     $startMemory = memory_get_usage();
+    $startTime   = microtime(true);
 
     printf("\e[1;4m%s\e[0m\n", $day->day());
     printf("    Part1: \e[1;32m%s\e[0m\n", $day->solvePart1());
@@ -31,7 +31,7 @@ printf("\nTotal time: \e[2m%.5fs\e[0m\n", microtime(true) - $totalStartTime);
 
 function report(float $startTime, int $startMemory): void
 {
-    $time           = microtime(true)    - $startTime;
+    $time           = microtime(true) - $startTime;
     $mem            = memory_get_usage() - $startMemory;
     $timeColourised = match (true) {
         $time >= 0.75 => sprintf("\e[0;31m%.5fs\e[2m", $time),
@@ -44,7 +44,7 @@ function report(float $startTime, int $startMemory): void
         default        => sprintf('%s', str_pad(humanReadableBytes($mem), 5)),
     };
 
-    printf("\e[2mMEM: %s PEAK MEM: %s DURATION: %s\e[0m\n",
+    printf("\e[2mMem: %s Peak: %s Time: %s\e[0m\n",
         $memColourised,
         str_pad(humanReadableBytes(memory_get_peak_usage()), 5),
         $timeColourised,
