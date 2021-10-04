@@ -20,7 +20,7 @@ can be written in any programming language.
 
 As mentioned I've chosen PHP8 and I had a blast using the new language features.  
 
-You'll find the solutions in the [/src](/src) directory and if you're feeling cheeky, the [/tests](/tests) folder
+You'll find the solutions in the [/src](/src) directory; typically one file per Day, although [Day12](/src/Day12/) was an exception, and I ended up abstracting this puzzle into objects. If you're feeling cheeky, the [/tests](/tests) folder
 has your expected answers to each day. The raw inputs are stored in [/input](/input), fetched automatically via the `make get-input` command.
 
 Included in this repo is also a handy [Makefile](/Makefile) that launches a php docker container to execute the tests.
