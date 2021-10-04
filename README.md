@@ -1,10 +1,10 @@
 ## Advent of Code 2020 PHP
 The solutions to [advent of code 2020](https://adventofcode.com/2020), solved using PHP8. By [James Thatcher](http://github.com/jthatch)
 
-### Solutions
+### Solutions 🥳🎉
 > 🎄 [Day 1](/src/Day1.php) 🎅 [Day 2](/src/Day2.php) ☃️ [Day 3](/src/Day3.php) 🦌 [Day 4](/src/Day4.php) 🍪 [Day 5](/src/Day5.php) 
 > 🥛 [Day 6](/src/Day6.php) 🧦 [Day 7](/src/Day7.php) 🎁 [Day 8](/src/Day8.php)   
-> ⛄ [Day 9](/src/Day9.php) 🛐 [Day 10](/src/Day10.php) ⛄ [Day 11](/src/Day11.php) 🍪 [Day 12](/src/Day12.php)
+> ⛄ [Day 9](/src/Day9.php) 🛐 [Day 10](/src/Day10.php) ⛄ [Day 11](/src/Day11.php) 🍪 [Day 12](/src/Day12.php) ☃️ [Day 13](/src/Day13.php)
 
 ### About
 My attempts at tacking the awesome challenges at [Advent of Code 2020](https://adventofcode.com/2020/day/1) using PHP8.
@@ -18,10 +18,19 @@ Each day comprises two parts, both based on the same input. You'll need to use a
 rely on good knowledge of algorithms, logic and data structures. The true beauty of Advent of Code is the solutions 
 can be written in any programming language.  
 
+### Tech
 As mentioned I've chosen PHP8 and I had a blast using the new language features.  
 
-You'll find the solutions in the [/src](/src) directory; typically one file per Day, although [Day12](/src/Day12/) was an exception, and I ended up abstracting this puzzle into objects. If you're feeling cheeky, the [/tests](/tests) folder
-has your expected answers to each day. The raw inputs are stored in [/input](/input), fetched automatically via the `make get-input` command.
+You'll find the solutions in the [/src](/src) directory; typically one file per Day, although [Day12](/src/Day12/) was an exception, and I ended up abstracting this puzzle into objects.  
+
+If you're feeling cheeky, the [/tests](/tests) folder
+has your expected answers to each day. I use a [DayFactory](/src/DayFactory.php) to generate each day with the input in `$this->input` which frees me up to focus on the challenge.   
+
+The runner [run.php](/run.php) detects which days have been completed and runs those, producing fancy output that times the execution time and memory consumption:
+
+![runner output](/aoc-2020-jthatch-run-output.png "AOC 2020 PHP runner output")
+
+The raw inputs are stored in [/input](/input), fetched automatically via the `make get-input` command.
 
 Included in this repo is also a handy [Makefile](/Makefile) that launches a php docker container to execute the tests.
 
