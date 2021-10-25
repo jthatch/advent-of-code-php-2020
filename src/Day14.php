@@ -71,16 +71,6 @@ class Day14 extends DayBehaviour implements DayInterface
                 }
                 // now our memory position in binary ($posBin) contains a number of floating values (X)
                 // these can be either 0 or 1 giving us 2^X possible memory combinations.
-
-                // Example: given a $posBin like 000000000000000000000000000000X1101X with 2 X's, we get 4 combinations:
-                //    000000000000000000000000000000(X)1101(X) becomes:
-                // 1. 000000000000000000000000000000(0)1101(0)
-                // 2. 000000000000000000000000000000(0)1101(1)
-                // 3. 000000000000000000000000000000(1)1101(0)
-                // 4. 000000000000000000000000000000(1)1101(1)
-
-                // with 3 it's 8 combinations.. and so on
-
                 // let's do this recursively
                 $posCombos = $this->maskTraverse($posMask);
                 foreach ($posCombos as $pos) {
@@ -94,6 +84,12 @@ class Day14 extends DayBehaviour implements DayInterface
 
     /**
      * Recursively build up a list of all possible positions.
+     * Example: given a $posBin like 000000000000000000000000000000X1101X with 2 X's, we get 4 combinations:
+     *    000000000000000000000000000000(X)1101(X) becomes:
+     * 1. 000000000000000000000000000000(0)1101(0)
+     * 2. 000000000000000000000000000000(0)1101(1)
+     * 3. 000000000000000000000000000000(1)1101(0)
+     * 4. 000000000000000000000000000000(1)1101(1).
      *
      * @param string $posMask
      *
