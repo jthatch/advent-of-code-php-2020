@@ -10,8 +10,6 @@ class Day15 extends DayBehaviour implements DayInterface
 {
     public function solvePart1(): int|string|null
     {
-        //$this->input[0] = '0,3,6';
-        //$this->input[0] = '3,1,2';
         $turns = array_map('intval', str_getcsv(trim($this->input[0])));
         $max   = 2020;
         $i     = count($turns);
@@ -33,7 +31,35 @@ class Day15 extends DayBehaviour implements DayInterface
 
     public function solvePart2(): int|string|null
     {
-        // TODO: Implement solvePart2() method.
-        return null;
+        // this takes 12s and uses 1.42gb of memory!
+        //return 1065;
+        $turns = array_map('intval', str_getcsv(trim($this->input[0])));
+        $max   = 30000000;
+        $i     = count($turns);
+
+        // <no => [turn2,turn1]>
+        $mem  = [];
+        $last = 0;
+        // seed with starting numbers, turn always starts from 1
+        foreach ($turns as $k => $t) {
+            $mem[$t] = [$k + 1];
+            $last    = $t;
+        }
+
+        while ($i < $max) {
+            // loop backwards from end of array
+            if (1 === count($mem[$last])) {
+                $next = 0;
+            } else {
+                $next       = $mem[$last][1] - $mem[$last][0];
+                $mem[$last] = array_slice($mem[$last], -2);
+            }
+            $mem[$next][] = $i + 1;
+            $mem[$next]   = array_slice($mem[$next], -2);
+            $last         = $next;
+            ++$i;
+        }
+
+        return $last;
     }
 }
