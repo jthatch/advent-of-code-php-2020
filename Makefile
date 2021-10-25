@@ -1,7 +1,7 @@
 SHELL=bash
 # advent of code helpers
 # looks in src/ for any Day[N].php files, sorts for the highest and sets that value
-# When you move to a new day you would create the DayN.php file then run `make day`
+# When you move to a new day you would create the DayN.php file then run `make get-input`
 # to retrieve that input, storing it in ./input/day[N].txt
 # saves time
 OS_NAME := $(shell uname -s | tr A-Z a-z)
@@ -30,8 +30,20 @@ uid        :=$(shell id -u)
 gid        :=$(shell id -g)
 
 # define our reusable docker run commands
+# php -dxdebug.mode=off -dzend_extension=opcache.so -dopcache.enable_cli=1 -dopcache.jit_buffer_size=100M -dopcache.jit=1255 run.php $(onlyThisDay)
+
+# For Day13 I needed the gmp library, so I made my own docker image based on php:8-cli (see Dockerfile)
+define DOCKER_RUN_PHP_MY_IMAGE
+docker run -it --rm --init \
+	--name "$(image-name)" \
+	-u "$(uid):$(gid)" \
+	-v "$(PWD):/app" \
+	-e PHP_IDE_CONFIG="serverName=$(image-name)" \
+	-w /app
+endef
+
 define DOCKER_RUN_PHP
-docker run -it --rm \
+docker run -it --rm --init \
 	--name "$(image-name)" \
 	-u "$(uid):$(gid)" \
 	-v "$(PWD):/app" \
@@ -40,7 +52,7 @@ docker run -it --rm \
 endef
 
 define DOCKER_RUN_PHP_XDEBUG
-docker run -it --rm \
+docker run -it --rm --init \
 	--name "$(image-name)-xdebug" \
 	--network=host\
 	-u "$(uid):$(gid)" \
@@ -62,47 +74,65 @@ docker run --rm -it \
 endef
 
 run: ## runs each days solution without test framework
+ifeq ($(shell docker image inspect $(image-name) > /dev/null 2>&1 || echo not_exists), not_exists)
+	@echo -e "\nFirst run detected! No $(image-name) docker image found, running docker build...\n"
+	DOCKER_BUILDKIT=1 docker build --build-arg UID=$(shell id -u) --build-arg GID=$(shell id -g) \
+		--tag="$(image-name)" \
+		-f Dockerfile .
+	make run
+else
 ifneq ("$(wildcard vendor)", "")
-	$(DOCKER_RUN_PHP) php -dzend_extension=opcache.so -dopcache.enable_cli=1 -dopcache.jit_buffer_size=500000000 -dopcache.jit=1235 run.php $(onlyThisDay)
+	@$(DOCKER_RUN_PHP_MY_IMAGE) $(image-name) php -dopcache.enable_cli=1 -dopcache.jit_buffer_size=100M -dopcache.jit=1255 run.php $(onlyThisDay)
 else
 	@echo -e "\nFirst run detected! No vendor/ folder found, running composer update...\n"
 	make composer
 	make run
 endif
+endif
 
 tests: ## runs each days pest tests within a docker container
+ifeq ($(shell docker image inspect $(image-name) > /dev/null 2>&1 || echo not_exists), not_exists)
+	@echo -e "\nFirst run detected! No $(image-name) docker image found, running docker build...\n"
+	DOCKER_BUILDKIT=1 docker build --build-arg UID=$(shell id -u) --build-arg GID=$(shell id -g) \
+		--tag="$(image-name)" \
+		-f Dockerfile .
+	make tests
+else
 ifneq ("$(wildcard vendor)", "")
-	$(DOCKER_RUN_PHP) vendor/bin/pest --testdox
+	$(DOCKER_RUN_PHP_MY_IMAGE) $(image-name) vendor/bin/pest --testdox
 else
 	@echo -e "\nFirst run detected! No vendor/ folder found, running composer update...\n"
 	make composer
 	make tests
 endif
+endif
 
 composer: ## Runs `composer update` on CWD, specify other commands via cmd=
 ifdef cmd
-	$(DOCKER_RUN_COMPOSER) $(cmd)
+	$(DOCKER_RUN_PHP_MY_IMAGE) $(image-name) composer --no-cache $(cmd)
 else
-	$(DOCKER_RUN_COMPOSER) update
+	$(DOCKER_RUN_PHP_MY_IMAGE) $(image-name) composer --no-cache update
 endif
 
 shell: ## Launch a shell into the docker container
-	$(DOCKER_RUN_PHP) /bin/bash
+	$(DOCKER_RUN_PHP_MY_IMAGE) $(image-name) /bin/bash
 
 xdebug: ## Launch a php container with xdebug (port 10000)
-	@$(DOCKER_RUN_PHP_XDEBUG) php run.php $(onlyThisDay)
+	@$(DOCKER_RUN_PHP_MY_IMAGE) -e XDEBUG_MODE=debug $(image-name) php run.php $(onlyThisDay)
 
 xdebug-shell: ## Launch a php container with xdebug in a shell (port 10000)
 	@echo -e "=== Xdebug Launch Instructions ===\nAt the prompt type:\nphp run.php [day]\n\n"
 	@$(DOCKER_RUN_PHP_XDEBUG) /bin/bash
+
 cleanup: ## remove all docker images
-	docker rm $$(docker ps -a | grep '$(image-name)' | awk '{print $$1}') --force
+	docker rm $$(docker ps -a | grep '$(image-name)' | awk '{print $$1}') --force || true
+	docker image rm $(image-name)
 
 cs-fix: ## run php-cs-fixer
-	$(DOCKER_RUN_COMPOSER) cs-fixer
+	$(DOCKER_RUN_PHP_MY_IMAGE) $(image-name) composer --no-cache run cs-fixer
 
 phpstan: ## run phpstan
-	$(DOCKER_RUN_COMPOSER) phpstan
+	$(DOCKER_RUN_PHP_MY_IMAGE) $(image-name) composer --no-cache run phpstan
 
 get-input: ## Retrieves the latest day's input from server
 ifndef aocCookie

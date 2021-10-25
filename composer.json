@@ -9,6 +9,8 @@
     "type": "project",
     "require": {
         "php": "^8.0",
+        "ext-bcmath": "*",
+        "ext-gmp": "*",
         "phpstan/phpstan-phpunit": "^0.12.22",
         "symplify/phpstan-extensions": "^9.4"
     },

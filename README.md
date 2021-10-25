@@ -21,7 +21,7 @@ can be written in any programming language.
 ### Tech
 As mentioned I've chosen PHP8 and I had a blast using the new language features.  
 
-You'll find the solutions in the [/src](/src) directory; typically one file per Day, although [Day12](/src/Day12/) was an exception, and I ended up abstracting this puzzle into objects.  
+You'll find the solutions in the [/src](/src) directory; typically one file per Day, although [Day12](/src/Day12) was an exception, and I ended up abstracting this puzzle into objects.  
 
 If you're feeling cheeky, the [/tests](/tests) folder
 has your expected answers to each day. I use a [DayFactory](/src/DayFactory.php) to generate each day with the input in `$this->input` which frees me up to focus on the challenge.   
@@ -42,10 +42,13 @@ If you fancy having a go at the challenges yourself feel free to use this repo a
 `make run`
 
 **Solve an individual days puzzles**  
-`make run day={N}` e.g. `make run day=1`
+`make run day={N}` e.g. `make run day=13`
 
 **Use XDebug**  
 `make xdebug`  
+
+**Xdebug can also be triggered on a single days puzzle**  
+`make xdebug day={N}` e.g. `make xdebug day=13`
 
 IDE settings:
 - `10000` - xdebug port 
