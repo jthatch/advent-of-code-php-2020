@@ -10,11 +10,19 @@ latestDay :=$(shell if [[ "$(OS_NAME)" == "linux" ]]; then find src -maxdepth 1 
 # then set export AOC_COOKIE=53616c7465645f5f2b44c4d4742765e14...
 aocCookie :=$(AOC_COOKIE)
 
+# append day={N} to make commands to run just that day
 ifdef day
 	onlyThisDay :=$$day
 else
 	onlyThisDay :=
 endif
+# append part={N} to make commands to run just that part
+ifdef part
+	onlyThisPart :=$$part
+else
+	onlyThisPart :=
+endif
+onlyThis:=$(onlyThisDay) $(onlyThisPart)
 
 help: ## This help.
 	@printf "\033[32m---------------------------------------------------------------------------\n  Advent of Code 2020 - James Thatcher\n  Current Day:\033[33m $(latestDay)\033[32m\n---------------------------------------------------------------------------\033[0m\n"
@@ -82,7 +90,7 @@ ifeq ($(shell docker image inspect $(image-name) > /dev/null 2>&1 || echo not_ex
 	make run
 else
 ifneq ("$(wildcard vendor)", "")
-	@$(DOCKER_RUN_PHP_MY_IMAGE) $(image-name) php -dopcache.enable_cli=1 -dopcache.jit_buffer_size=100M -dopcache.jit=1255 run.php $(onlyThisDay)
+	@$(DOCKER_RUN_PHP_MY_IMAGE) $(image-name) php -dopcache.enable_cli=1 -dopcache.jit_buffer_size=100M -dopcache.jit=1255 run.php $(onlyThis)
 else
 	@echo -e "\nFirst run detected! No vendor/ folder found, running composer update...\n"
 	make composer
@@ -118,11 +126,10 @@ shell: ## Launch a shell into the docker container
 	$(DOCKER_RUN_PHP_MY_IMAGE) $(image-name) /bin/bash
 
 xdebug: ## Launch a php container with xdebug (port 10000)
-	@$(DOCKER_RUN_PHP_MY_IMAGE) -e XDEBUG_MODE=debug $(image-name) php run.php $(onlyThisDay)
+	@$(DOCKER_RUN_PHP_MY_IMAGE) -e XDEBUG_MODE=debug $(image-name) php run.php $(onlyThis)
 
-xdebug-shell: ## Launch a php container with xdebug in a shell (port 10000)
-	@echo -e "=== Xdebug Launch Instructions ===\nAt the prompt type:\nphp run.php [day]\n\n"
-	@$(DOCKER_RUN_PHP_XDEBUG) /bin/bash
+xdebug-profile: ## Runs the xdebug profiler for analysing performance
+	$(DOCKER_RUN_PHP_MY_IMAGE) -e XDEBUG_MODE=profile $(image-name) php -dxdebug.output_dir=/app run.php $(onlyThis)
 
 cleanup: ## remove all docker images
 	docker rm $$(docker ps -a | grep '$(image-name)' | awk '{print $$1}') --force || true

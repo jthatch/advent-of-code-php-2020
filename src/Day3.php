@@ -11,17 +11,15 @@ class Day3 extends DayBehaviour implements DayInterface
     public function solvePart1(): ?int
     {
         // build multi-dimensional array of map
-        $map      = array_map(static fn ($s) => str_split(trim($s)), $this->input);
-        $tree     = '#';
-        $hitTrees = 0;
-        $x        = 3; // starting point
-        //printf(implode('', $map[0])."\n");
+        $map       = array_map(static fn ($s) => str_split(trim($s)), $this->input);
+        $tree      = '#';
+        $hitTrees  = 0;
+        $x         = 3; // starting point
         $rowLength = count(array_shift($map) ?? []);
         foreach ($map as $row) {
             $pixel = $row[$x];
             $hitTrees += $pixel === $tree ? 1 : 0;
             $row[$x] = $pixel   === $tree ? 'X' : 'O';
-            //printf(implode('', $row)."\n");
 
             $x += 3;
             $x = $x >= $rowLength ? $x - $rowLength : $x;

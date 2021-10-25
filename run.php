@@ -1,5 +1,19 @@
 <?php
-
+/** Advent of Code 2020 PHP runner
+ *
+ * Usage:
+ *  php run.php [day] [part]
+ *
+ * Examples:
+ * Run all days:
+ * php run.php
+ *
+ * Run Day 10 part 1 & 2:
+ * php run.php 10
+ *
+ * Run day 7 part 2:
+ * php run.php 7 2
+ */
 declare(strict_types=1);
 
 use App\DayFactory;
@@ -8,10 +22,16 @@ use App\Interfaces\DayInterface;
 $totalStartTime = microtime(true);
 require 'vendor/autoload.php';
 
+$onlyRunDay  = $argv[1] ?? null;
+$onlyRunPart = match($argv[2] ?? null) {
+    '1', '2' => (int) $argv[2],
+    default  => null,
+};
+
 // If a day is passed on the command line, e.g. `php run.php 1` our generator returns that single day,
 // otherwise returns all days that we have solved
-$dayGenerator = $argv[1] ?? null
-    ? (static fn () => yield DayFactory::create((int) $argv[1]))()
+$dayGenerator = $onlyRunDay
+    ? (static fn () => yield DayFactory::create((int) $onlyRunDay))()
     : DayFactory::allAvailableDays();
 
 printf("\033[32m---------------------------------------------------------------------------\n  Advent of Code 2020 PHP - James Thatcher\n---------------------------------------------------------------------------\033[0m\n");
@@ -22,8 +42,12 @@ foreach ($dayGenerator as $day) {
     $startTime   = microtime(true);
 
     printf("\e[1;4m%s\e[0m\n", $day->day());
-    printf("    Part1: \e[1;32m%s\e[0m\n", $day->solvePart1());
-    printf("    Part2: \e[1;32m%s\e[0m\n", $day->solvePart2());
+    if (null === $onlyRunPart || 1 === $onlyRunPart) {
+        printf("    Part1: \e[1;32m%s\e[0m\n", $day->solvePart1());
+    }
+    if (null === $onlyRunPart || 2 === $onlyRunPart) {
+        printf("    Part2: \e[1;32m%s\e[0m\n", $day->solvePart2());
+    }
     report($startTime, $startMemory);
 }
 

@@ -30,13 +30,6 @@ class Day12 extends DayBehaviour implements DayInterface
 
     public function solvePart2(): ?int
     {
-        /*$this->input = [
-            'F10',
-            'N3',
-            'F7',
-            'R90',
-            'F11'
-        ];*/
         $input    = $this->getInputAsDirectionAmountArr();
         $waypoint = new Waypoint(
             latitude: 1,
