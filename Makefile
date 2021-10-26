@@ -90,7 +90,7 @@ ifeq ($(shell docker image inspect $(image-name) > /dev/null 2>&1 || echo not_ex
 	make run
 else
 ifneq ("$(wildcard vendor)", "")
-	@$(DOCKER_RUN_PHP_MY_IMAGE) $(image-name) php -dmemory_limit=1G -dopcache.enable_cli=1 -dopcache.jit_buffer_size=100M -dopcache.jit=1255 run.php $(onlyThis)
+	@$(DOCKER_RUN_PHP_MY_IMAGE) $(image-name) php -dmemory_limit=600M -dopcache.enable_cli=1 -dopcache.jit_buffer_size=100M -dopcache.jit=1255 run.php $(onlyThis)
 else
 	@echo -e "\nFirst run detected! No vendor/ folder found, running composer update...\n"
 	make composer
@@ -107,7 +107,7 @@ ifeq ($(shell docker image inspect $(image-name) > /dev/null 2>&1 || echo not_ex
 	make tests
 else
 ifneq ("$(wildcard vendor)", "")
-	$(DOCKER_RUN_PHP_MY_IMAGE) $(image-name) vendor/bin/pest --testdox
+	$(DOCKER_RUN_PHP_MY_IMAGE) $(image-name) php -dmemory_limit=600M vendor/bin/pest --testdox
 else
 	@echo -e "\nFirst run detected! No vendor/ folder found, running composer update...\n"
 	make composer
@@ -126,10 +126,10 @@ shell: ## Launch a shell into the docker container
 	$(DOCKER_RUN_PHP_MY_IMAGE) $(image-name) /bin/bash
 
 xdebug: ## Launch a php container with xdebug (port 10000)
-	@$(DOCKER_RUN_PHP_MY_IMAGE) -e XDEBUG_MODE=debug $(image-name) php -dmemory_limit=1G run.php $(onlyThis)
+	@$(DOCKER_RUN_PHP_MY_IMAGE) -e XDEBUG_MODE=debug $(image-name) php -dmemory_limit=600M run.php $(onlyThis)
 
 xdebug-profile: ## Runs the xdebug profiler for analysing performance
-	$(DOCKER_RUN_PHP_MY_IMAGE) -e XDEBUG_MODE=profile $(image-name) php -dxdebug.output_dir=/app run.php $(onlyThis)
+	$(DOCKER_RUN_PHP_MY_IMAGE) -e XDEBUG_MODE=profile $(image-name) php -dxdebug.output_dir=/app -dmemory_limit=600M run.php $(onlyThis)
 
 cleanup: ## remove all docker images
 	docker rm $$(docker ps -a | grep '$(image-name)' | awk '{print $$1}') --force || true
