@@ -126,7 +126,7 @@ shell: ## Launch a shell into the docker container
 	$(DOCKER_RUN_PHP_MY_IMAGE) $(image-name) /bin/bash
 
 xdebug: ## Launch a php container with xdebug (port 10000)
-	@$(DOCKER_RUN_PHP_MY_IMAGE) -e XDEBUG_MODE=debug $(image-name) php run.php $(onlyThis)
+	@$(DOCKER_RUN_PHP_MY_IMAGE) -e XDEBUG_MODE=debug $(image-name) php -dmemory_limit=1G run.php $(onlyThis)
 
 xdebug-profile: ## Runs the xdebug profiler for analysing performance
 	$(DOCKER_RUN_PHP_MY_IMAGE) -e XDEBUG_MODE=profile $(image-name) php -dxdebug.output_dir=/app run.php $(onlyThis)

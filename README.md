@@ -4,8 +4,7 @@ The solutions to [advent of code 2020](https://adventofcode.com/2020), solved us
 ### Solutions 🥳🎉
 > 🎄 [Day 1](/src/Day1.php) 🎅 [Day 2](/src/Day2.php) ☃️ [Day 3](/src/Day3.php) 🦌 [Day 4](/src/Day4.php) 🍪 [Day 5](/src/Day5.php) 
 > 🥛 [Day 6](/src/Day6.php) 🧦 [Day 7](/src/Day7.php) 🎁 [Day 8](/src/Day8.php)   
-> ⛄ [Day 9](/src/Day9.php) 🛐 [Day 10](/src/Day10.php) ⛄ [Day 11](/src/Day11.php) 🍪 [Day 12](/src/Day12.php) ☃️ [Day 13](/src/Day13.php) 🎅 [Day 14](/src/Day14.php) 🎄 [Day 15](/src/Day15.php) 
-
+> ⛄ [Day 9](/src/Day9.php) 🛐 [Day 10](/src/Day10.php) ⛄ [Day 11](/src/Day11.php) 🍪 [Day 12](/src/Day12.php) ☃️ [Day 13](/src/Day13.php) 🎅 [Day 14](/src/Day14.php) 🎄 [Day 15](/src/Day15.php)
 ### About
 My attempts at tacking the awesome challenges at [Advent of Code 2020](https://adventofcode.com/2020/day/1) using PHP8.
 
@@ -17,6 +16,11 @@ helping Santa and his elves deliver on their quest to deliver pressies on time.
 Each day comprises two parts, both based on the same input. You'll need to use all your smarts to solve these as they
 rely on good knowledge of algorithms, logic and data structures. The true beauty of Advent of Code is the solutions 
 can be written in any programming language.  
+
+I am most proud of my solution to [Day15](/src/Day15.php), which requires you to remember the numbers said in a list, 
+appending the next based on when it was previously said. Part 2 requires you to calculate the 30'000'000 (30 millionth)
+number spoken, and through lots of tweaking and optimisations, I've got this solution down to 11 seconds using 633mb.
+![day 15 part 2](/aoc-2020-jthatch-day15-pt2.png "AOC 2020 PHP Day 15 Part 2 in 11 secs")
 
 ### Tech
 As mentioned I've chosen PHP8 and I had a blast using the new language features.  
