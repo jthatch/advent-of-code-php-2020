@@ -9,6 +9,11 @@ use SplFixedArray;
 
 class Day15 extends DayBehaviour implements DayInterface
 {
+    /**
+     * @see oldPart1() for original implementation. Very slow, very pants… no chance for part 2 unless bruteforcing it
+     *
+     * @return int
+     */
     public function solvePart1(): int
     {
         return $this->numberSpoken(2020);
@@ -77,5 +82,26 @@ class Day15 extends DayBehaviour implements DayInterface
         }
 
         return $last;
+    }
+
+    public function oldPart1(): int|string|null
+    {
+        $turns = array_map('intval', str_getcsv(trim($this->input[0])));
+        $max   = 2020;
+        $i     = count($turns);
+        while ($i < $max) {
+            $last = $turns[count($turns) - 1];
+            $seen = array_slice(array_filter($turns, static fn (int $no) => $no === $last, ARRAY_FILTER_USE_BOTH), -2, 2, true);
+            if (1 === count($seen)) {
+                $next = 0;
+            } else {
+                $last2 = array_map(static fn (int $i) => $i + 1, array_keys($seen));
+                $next  = $last2[1] - $last2[0];
+            }
+            $turns[] = $next;
+            ++$i;
+        }
+
+        return $turns[count($turns) - 1];
     }
 }

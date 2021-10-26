@@ -29,6 +29,11 @@ class types like `SplFixedArray`. I've got this solution down to just 11 seconds
 ![day 15 part 2](/aoc-2020-jthatch-day15-pt2.png "AOC 2020 PHP Day 15 Part 2 in 11 secs")
 
 ### Tech
+- Docker
+- Makefile
+- PHP8
+- Pest  
+
 As mentioned I've chosen PHP8 and I had a blast using the new language features.  
 
 You'll find the solutions in the [/src](/src) directory; typically one file per Day, although [Day12](/src/Day12) was an exception, and I ended up abstracting this puzzle into objects.  
@@ -47,6 +52,7 @@ Included in this repo is also a handy [Makefile](/Makefile) that launches a php 
 If you fancy having a go at the challenges yourself feel free to use this repo as a framework/skeleton.
 
 ### Commands
+_Note: checkout the code then run the following, the docker and composer libraries will auto install._  
 
 **Solve all days puzzles**  
 `make run`
