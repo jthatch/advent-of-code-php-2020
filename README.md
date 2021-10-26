@@ -17,9 +17,15 @@ Each day comprises two parts, both based on the same input. You'll need to use a
 rely on good knowledge of algorithms, logic and data structures. The true beauty of Advent of Code is the solutions 
 can be written in any programming language.  
 
-I am most proud of my solution to [Day15](/src/Day15.php), which requires you to remember the numbers said in a list, 
-appending the next based on when it was previously said. Part 2 requires you to calculate the 30'000'000 (30 millionth)
-number spoken, and through lots of tweaking and optimisations, I've got this solution down to 11 seconds using 633mb.
+### 🏆 Best bits
+**Best algorithm and optimisation: Day15**  
+[Day15](/src/Day15.php), requires you to remember the numbers said in a list, appending the next based on when it was 
+previously said.
+My first attempt at this (part 1) was pants. I used a single array to keep track of every number spoken and used the 
+array index to calculate turns. Fine for calculating the 2020th but when it came to the 30 millionth… No chance! 😂
+
+After much playing around and refactoring, I was able to make some big improvements by using some lesser-known PHP 
+class types like `SplFixedArray`. I've got this solution down to just 11 seconds using a paltry 633mb of RAM on my lappy.  
 ![day 15 part 2](/aoc-2020-jthatch-day15-pt2.png "AOC 2020 PHP Day 15 Part 2 in 11 secs")
 
 ### Tech

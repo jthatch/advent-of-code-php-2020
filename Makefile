@@ -90,7 +90,7 @@ ifeq ($(shell docker image inspect $(image-name) > /dev/null 2>&1 || echo not_ex
 	make run
 else
 ifneq ("$(wildcard vendor)", "")
-	@$(DOCKER_RUN_PHP_MY_IMAGE) $(image-name) php -dmemory_limit=4G -dopcache.enable_cli=1 -dopcache.jit_buffer_size=100M -dopcache.jit=1255 run.php $(onlyThis)
+	@$(DOCKER_RUN_PHP_MY_IMAGE) $(image-name) php -dmemory_limit=1G -dopcache.enable_cli=1 -dopcache.jit_buffer_size=100M -dopcache.jit=1255 run.php $(onlyThis)
 else
 	@echo -e "\nFirst run detected! No vendor/ folder found, running composer update...\n"
 	make composer
