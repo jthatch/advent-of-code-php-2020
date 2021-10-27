@@ -21,8 +21,6 @@ class Day15 extends DayBehaviour implements DayInterface
 
     public function solvePart2(): int
     {
-        // takes this long on my MBP
-        // Mem: -40b  Peak: 458.2mb Time: 2.51856s
         return $this->numberSpoken(30_000_000);
     }
 
