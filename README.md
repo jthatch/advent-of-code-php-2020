@@ -25,9 +25,9 @@ My first attempt at this (part 1) was pants. I used a single array to keep track
 array index to calculate turns. Fine for calculating the 2020th but when it came to the 30 millionth… No chance! 😂
 
 After much playing around and refactoring, I was able to make some big improvements by using some lesser-known PHP 
-class types like `SplFixedArray`. I've got this solution down to 1.5 seconds using 458mb of RAM. (_using a standard `array`
+class types like `SplFixedArray`. I've got this solution down to 1.3 seconds using 458mb of RAM. (_using a standard `array`
 takes 3.7 seconds however it only uses 240mb of RAM_)
-![day 15 part 2](/aoc-2020-jthatch-day15-pt2.png "AOC 2020 PHP Day 15 Part 2 in 1.5 secs")
+![day 15 part 2](/aoc-2020-jthatch-day15-pt2.png "AOC 2020 PHP Day 15 Part 2 in 1.3 secs")
 
 ### Tech
 - Docker
