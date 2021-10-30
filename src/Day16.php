@@ -32,7 +32,7 @@ class Day16 extends DayBehaviour implements DayInterface
             foreach ($ticket as $n) {
                 $foundValidRule = null;
                 foreach ($rules as [$a, $b]) {
-                    $foundValidRule ??= (($n >= $a[0] && $n <= $a[1]) || ($n >= $b[0] && $n <= $b[1])) ? true : null;
+                    $foundValidRule ??= ($n >= $a[0] && $n <= $a[1]) || ($n >= $b[0] && $n <= $b[1]) ? true : null;
                 }
                 if (!$foundValidRule) {
                     $invalid[] = $n;
@@ -73,10 +73,7 @@ class Day16 extends DayBehaviour implements DayInterface
                     $ticket[$p][$ruleName] = array_map(static fn (array $a) => array_map('intval', $a), array_chunk($matches[1], 2));
                 }
             } elseif (str_contains($line, ',')) { // parse the comma separated list of numbers
-                $nums = explode(',', $line);
-                if (!empty($nums)) {
-                    $ticket[$p][] = array_map('intval', $nums);
-                }
+                $ticket[$p][] = array_map('intval', explode(',', $line));
             }
         }
 
