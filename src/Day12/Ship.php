@@ -6,10 +6,11 @@ namespace App\Day12;
 
 class Ship implements ShipInterface
 {
-    public function __construct(protected int $degrees,
-                                protected int $latitude = 0,
-                                protected int $longitude = 0)
-    {
+    public function __construct(
+        protected int $degrees,
+        protected int $latitude = 0,
+        protected int $longitude = 0
+    ) {
     }
 
     public function move(string $direction, int $amount): self

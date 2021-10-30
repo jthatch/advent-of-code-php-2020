@@ -40,7 +40,10 @@ class Day10 extends DayBehaviour implements DayInterface
         $histogram = array_count_values(
             array_map(
                 static fn (int $c, ?int $n) => ($n ?? $c) - $c, // find the delta between (c)urrent and (n)ext values in array
-                $input, array_slice($input, 1)));
+                $input,
+                array_slice($input, 1)
+            )
+        );
 
         // return the number of 1-jolt x 3-jolts
         return $histogram[1] * $histogram[3];
@@ -55,7 +58,8 @@ class Day10 extends DayBehaviour implements DayInterface
         $value = $this->input[$offset];
         $nodes = array_filter( // get a list of all adapters <= 3 jumps from $value
             array_slice($this->input, $offset + 1, $offset + 4, true),
-            static fn (int $v) => ($v - $value) <= 3);
+            static fn (int $v) => ($v - $value) <= 3
+        );
         // cache the offset, only way this completes in time
         $this->cache[$offset] ??= array_sum(array_map(fn (int $k) => $this->adapterTraverse($k), array_keys($nodes)));
 

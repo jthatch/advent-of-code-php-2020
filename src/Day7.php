@@ -84,8 +84,10 @@ class Day7 extends DayBehaviour implements DayInterface
             $bagCount[] = $currCount;
 
             /** @noinspection SlowArrayOperationsInLoopInspection */
-            $bagCount = array_merge($bagCount,
-                ...array_map(fn ($childBags) => $this->bagCount([$childBags], $currCount), $tree['child']));
+            $bagCount = array_merge(
+                $bagCount,
+                ...array_map(fn ($childBags) => $this->bagCount([$childBags], $currCount), $tree['child'])
+            );
         }
 
         return $bagCount;

@@ -13,6 +13,7 @@ $config
     ->setRiskyAllowed(true)
     ->setRules(array(
         '@Symfony' => true,
+        '@PSR12' => true,
         'binary_operator_spaces' => ['default' => 'align_single_space_minimal'],
         'ordered_imports' => true,
         'array_syntax' => ['syntax' => 'short'],

@@ -6,10 +6,11 @@ namespace App\Day12;
 
 class ShipWithWaypoint implements ShipInterface
 {
-    public function __construct(protected Waypoint $waypoint,
-                                protected int $latitude = 0,
-                                protected int $longitude = 0)
-    {
+    public function __construct(
+        protected Waypoint $waypoint,
+        protected int $latitude = 0,
+        protected int $longitude = 0
+    ) {
     }
 
     public function move(string $direction, int $amount): self

@@ -89,7 +89,9 @@ class Day8 extends DayBehaviour implements DayInterface
                     // we've exhausted all options
                     break;
                 }
-                array_walk($input, static function (&$i): void { unset($i['done']); }); // reset
+                array_walk($input, static function (&$i): void {
+                    unset($i['done']);
+                }); // reset
                 $regression            = array_pop($nopAndJmp);
                 $regression['pointer'] = $pointer;
                 $insPointer            = 0;

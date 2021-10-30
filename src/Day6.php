@@ -68,8 +68,11 @@ class Day6 extends DayBehaviour implements DayInterface
                 /** @noinspection SlowArrayOperationsInLoopInspection */
                 $answers = array_merge($answers, $g);
             }
-            $everyoneAnswered = array_filter(array_count_values($answers),
-                static fn (int $count, string $chr) => $count === $memberCount, ARRAY_FILTER_USE_BOTH);
+            $everyoneAnswered = array_filter(
+                array_count_values($answers),
+                static fn (int $count, string $chr) => $count === $memberCount,
+                ARRAY_FILTER_USE_BOTH
+            );
             $everyoneAnsweredYes += count($everyoneAnswered);
         }
 

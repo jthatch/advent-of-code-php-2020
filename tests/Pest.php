@@ -27,7 +27,8 @@ uses()->beforeEach(function (): void {
 })->in(__DIR__);
 
 uses()->afterEach(function (): void {
-    printf("\tCompleted in: %.6fs Memory: %s Peak: %s\n",
+    printf(
+        "\tCompleted in: %.6fs Memory: %s Peak: %s\n",
         microtime(true) - $this->startTime,
         humanReadableBytes(memory_get_usage() - $this->startMemory),
         humanReadableBytes(memory_get_peak_usage())

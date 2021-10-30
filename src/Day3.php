@@ -18,8 +18,8 @@ class Day3 extends DayBehaviour implements DayInterface
         $rowLength = count(array_shift($map) ?? []);
         foreach ($map as $row) {
             $pixel = $row[$x];
-            $hitTrees += $pixel === $tree ? 1 : 0;
-            $row[$x] = $pixel   === $tree ? 'X' : 'O';
+            $hitTrees += (int) ($pixel === $tree);
+            $row[$x] = $pixel === $tree ? 'X' : 'O';
 
             $x += 3;
             $x = $x >= $rowLength ? $x - $rowLength : $x;
@@ -52,8 +52,8 @@ class Day3 extends DayBehaviour implements DayInterface
                     continue; // skip according to our $down velocity
                 }
                 $pixel = $row[$x];
-                $hitTrees += $pixel === $tree ? 1 : 0;
-                $row[$x] = $pixel   === $tree ? 'X' : 'O';
+                $hitTrees += (int) ($pixel === $tree);
+                $row[$x] = $pixel === $tree ? 'X' : 'O';
 
                 $x += $right;
                 $x = $x >= $rowLength ? $x - $rowLength : $x;

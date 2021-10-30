@@ -75,7 +75,8 @@ function report(float $startTime): void
         default          => sprintf('% 7s', str_pad(humanReadableBytes($memPeak), 5)),
     };
 
-    printf("      \e[2mMem[%s] Peak[%s] Time[%s]\e[0m\n",
+    printf(
+        "      \e[2mMem[%s] Peak[%s] Time[%s]\e[0m\n",
         $memColourised,
         $memPeakColourised,
         $timeColourised,
@@ -87,6 +88,8 @@ function humanReadableBytes(int $bytes, ?int $precision = null): string
     $units          = ['b', 'kb', 'mb', 'gb', 'tb', 'pb', 'eb', 'zb', 'yb'];
     $precisionUnits = [0, 0, 1, 2, 2, 3, 3, 4, 4];
 
-    return round($bytes / (1024 ** ($i = floor(log($bytes, 1024)))),
-            is_null($precision) ? $precisionUnits[$i] : $precision).$units[$i];
+    return round(
+        $bytes / (1024 ** ($i = floor(log($bytes, 1024)))),
+        is_null($precision) ? $precisionUnits[$i] : $precision
+    ).$units[$i];
 }
