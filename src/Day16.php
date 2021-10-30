@@ -30,18 +30,12 @@ class Day16 extends DayBehaviour implements DayInterface
         $invalid = [];
         foreach ($nearby as $ticket) {
             foreach ($ticket as $n) {
-                $foundValidRule = false;
-                $ticketInvalid  = [];
+                $foundValidRule = null;
                 foreach ($rules as [$a, $b]) {
-                    if (($n < $a[0] || $n > $a[1]) && ($n < $b[0] || $n > $b[1])) {
-                        $ticketInvalid[] = $n;
-                    } else {
-                        $foundValidRule = true;
-                    }
+                    $foundValidRule ??= (($n >= $a[0] && $n <= $a[1]) || ($n >= $b[0] && $n <= $b[1])) ? true : null;
                 }
                 if (!$foundValidRule) {
-                    /** @noinspection SlowArrayOperationsInLoopInspection */
-                    $invalid = array_merge($invalid, array_unique($ticketInvalid));
+                    $invalid[] = $n;
                 }
             }
         }
