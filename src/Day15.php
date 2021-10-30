@@ -61,6 +61,7 @@ class Day15 extends DayBehaviour implements DayInterface
             $next       = $i - ($mem[$next] ?? $i);
             $mem[$last] = $i++;
         }
+        unset($mem);
 
         return $next;
     }
