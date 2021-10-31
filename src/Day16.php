@@ -58,11 +58,14 @@ class Day16 extends DayBehaviour implements DayInterface
                 }
             }
         }
-        // we now have an array containing positions and every rule that applies to that position
-        // many of the rules apply to multiple positions, so can't simply sort and pick the highest
-        // as every rule must be used only once lets sort the positions by least rules and starting with that
-        // assign that rule to a position, taking it out of rotation and keep applying until we have assigned each
-        // rule to a single position
+        /* we now have an array containing positions and every rule that applies to that position
+         many of the rules apply to multiple positions, so can't simply sort and pick the highest
+         however after sorting the positions by number of applicable rules, we discover there is a position
+         that has only a single rule, and the next position in turn has 2, one of which is our first rule,
+         and so on and so on… is your head hurting yet? :D
+         with all of that said, now we have an approach: starting with the position with a single rule,
+         loop and remove assigned rules from the rest. This will give us ordered list containing one rule
+         per position.*/
         uasort($rulePositions, fn ($a, $b) => count($a) <=> count($b));
         $finalRulePositions = [];
         foreach ($rulePositions as $position => $rulesInPosition) {
