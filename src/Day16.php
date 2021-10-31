@@ -1,4 +1,5 @@
 <?php
+/** @noinspection StaticClosureCanBeUsedInspection */
 
 declare(strict_types=1);
 
@@ -10,26 +11,10 @@ class Day16 extends DayBehaviour implements DayInterface
 {
     public function solvePart1(): ?int
     {
-        /*$this->input = array_map(static fn(string $l) => $l . "\n", explode("\n",<<<INPUT
-        class: 1-3 or 5-7
-        row: 6-11 or 33-44
-        seat: 13-40 or 45-50
-
-        your ticket:
-        7,1,14
-
-        nearby tickets:
-        7,3,47
-        40,4,50
-        55,2,20
-        38,6,12
-        INPUT));*/
-
         [$rules,, $nearby] = $this->getTicketDataFromInput($this->input);
-
-        $invalid = [];
-        foreach ($nearby as $ticket) {
-            foreach ($ticket as $n) {
+        $invalid           = [];
+        foreach ($nearby as $ticketNumbers) {
+            foreach ($ticketNumbers as $n) {
                 $foundValidRule = null;
                 foreach ($rules as [$a, $b]) {
                     $foundValidRule ??= ($n >= $a[0] && $n <= $a[1]) || ($n >= $b[0] && $n <= $b[1]) ? true : null;
@@ -45,10 +30,85 @@ class Day16 extends DayBehaviour implements DayInterface
 
     public function solvePart2(): ?int
     {
-        // TODO: Implement solvePart2() method.
-        return null;
+        [$rules, $my, $nearby] = $this->getTicketDataFromInput($this->input);
+
+        // remove invalid tickets… these are tickets with numbers that don't pass any rules
+        $nearby = array_filter(
+            $nearby,
+            fn (array $ticketNumbers) => $ticketNumbers === array_filter( // rule passing tickets will be unchanged
+                $ticketNumbers,
+                fn (int $n) => !empty(array_filter( // remove tickets that don't pass either rule condition
+                    $rules,
+                    fn (array $r) => ($n >= $r[0][0] && $n <= $r[0][1]) || ($n >= $r[1][0] && $n <= $r[1][1])
+                ))
+            )
+        );
+        // append my ticket
+        $nearby = array_merge($nearby, $my);
+
+        // now calculate the order the rules go
+        $maxScore = count($nearby);
+        /* @var array<int<string>> $rulePositions */
+        $rulePositions = [];
+        for ($position = 0, $positionMax = count($rules); $position < $positionMax; ++$position) {
+            foreach ($rules as $ruleName => $ruleSet) {
+                $numbersAtPosition = array_map(fn ($n) => $n[$position], $nearby);
+                if ($maxScore === $this->getRuleScore($ruleSet, $numbersAtPosition)) {
+                    $rulePositions[$position][] = $ruleName;
+                }
+            }
+        }
+        // we now have an array containing positions and every rule that applies to that position
+        // many of the rules apply to multiple positions, so can't simply sort and pick the highest
+        // as every rule must be used only once lets sort the positions by least rules and starting with that
+        // assign that rule to a position, taking it out of rotation and keep applying until we have assigned each
+        // rule to a single position
+        uasort($rulePositions, fn ($a, $b) => count($a) <=> count($b));
+        $finalRulePositions = [];
+        foreach ($rulePositions as $position => $rulesInPosition) {
+            $actualRules = array_diff($rulesInPosition, $finalRulePositions);
+            if (1 === count($actualRules)) {
+                $finalRulePositions[$position] = array_pop($actualRules);
+            }
+        }
+
+        $departureRules = array_filter($finalRulePositions, fn (string $r) => str_starts_with($r, 'departure'));
+
+        // returning the sum of all fields starting with departure from our ticket
+        return array_reduce(array_keys($departureRules), fn ($sum, $key) => $sum * $my[0][$key], 1);
     }
 
+    /**
+     * Takes an array of rules and applies them to an array of ticket numbers, returning the valid score.
+     *
+     * @param array $rules
+     * @param array $ticketNumbers
+     *
+     * @return int
+     */
+    protected function getRuleScore(array $rules, array $ticketNumbers): int
+    {
+        $score = 0;
+        foreach ($ticketNumbers as $n) {
+            $foundValidRule = null;
+            foreach ($rules as [$min, $max]) {
+                $foundValidRule ??= ($n >= $min && $n <= $max) ? true : null;
+            }
+            if ($foundValidRule) {
+                ++$score;
+            }
+        }
+
+        return $score;
+    }
+
+    /**
+     * Extract ticket data from input, returning array containing `rules`, `my` and `nearby` tickets.
+     *
+     * @param array $input
+     *
+     * @return array
+     */
     protected function getTicketDataFromInput(array $input): array
     {
         $ticket = [
