@@ -4,8 +4,9 @@ SHELL=bash
 # When you move to a new day you would create the DayN.php file then run `make get-input`
 # to retrieve that input, storing it in ./input/day[N].txt
 # saves time
-OS_NAME := $(shell uname -s | tr A-Z a-z)
+OS_NAME   :=$(shell uname -s | tr A-Z a-z)
 latestDay :=$(shell if [[ "$(OS_NAME)" == "linux" ]]; then find src -maxdepth 1 -type f  \( -name "Day[0-9][0-9].php" -o -name "Day[0-9].php" \) -printf '%f\n' | sort -Vr | head -1 | grep -o '[0-9]\+' || echo "1";  else find src -maxdepth 1 -type f  \( -name "Day[0-9][0-9].php" -o -name "Day[0-9].php" \) -print0 | xargs -0 stat -f '%N ' | sort -Vr | head -1 | grep -o '[0-9]\+' || echo "1"; fi)
+nextDay   :=$(shell echo $$(($(latestDay)+1)))
 # in order to retrieve the Days input from the server you must login to adventofcode.com and grab the `session` cookie
 # then set export AOC_COOKIE=53616c7465645f5f2b44c4d4742765e14...
 aocCookie :=$(AOC_COOKIE)
@@ -148,4 +149,19 @@ ifndef aocCookie
 else
 	@echo -e "Fetching latest input using day=$(latestDay) AOC_COOKIE=$(aocCookie)"
 	@curl -s --location --request GET 'https://adventofcode.com/2020/day/$(latestDay)/input' --header 'Cookie: session=$(aocCookie)' -o ./input/day$(latestDay).txt && echo "./src/day$(latestDay).txt downloaded" || echo "error downloading"
+endif
+define DAY_TEMPLATE
+<?php\n\ndeclare(strict_types=1);\n\nnamespace App;\n\nuse App\Interfaces\DayInterface;\n\nclass Day$(nextDay) extends DayBehaviour implements DayInterface\n{\n    public function solvePart1(): ?int\n    {\n        // TODO: Implement solvePart1() method.\n        return null;\n    }\n\n    public function solvePart2(): ?int\n    {\n        // TODO: Implement solvePart2() method.\n        return null;\n    }\n}\n
+endef
+define DAY_TEST_TEMPLATE
+<?php\n\ndeclare(strict_types=1);\n\nuse App\DayFactory;\nuse App\Interfaces\DayInterface;\n\nuses()->beforeEach(function (): void {\n    /* @var DayInterface day */\n    \$$this->day = DayFactory::create(getDayFromFile(__FILE__));\n});\n\ntest('solves part1')\n    ->expect(fn () => \$$this->day->solvePart1())\n    ->toBe(null)\n;\n\ntest('solves part2')\n    ->expect(fn () => \$$this->day->solvePart2())\n    ->toBe(null)\n;\n
+endef
+new: ## Generates the next days PHP files
+ifneq ("$(wildcard src/Day$(nextDay).php)","")
+	@echo -e "The file: src/Day$(nextDay).php already exists...\n"
+else
+	@echo -e "$(DAY_TEMPLATE)" >src/Day$(nextDay).php
+	@echo -e "$(DAY_TEST_TEMPLATE)" >tests/Day$(nextDay)Test.php
+	@echo -e "Created new file: src/Day$(nextDay).php"
+	@echo -e "Created new file: tests/Day$(nextDay)Test.php"
 endif

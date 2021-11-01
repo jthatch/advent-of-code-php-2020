@@ -1,4 +1,5 @@
 <?php
+
 /** @noinspection StaticClosureCanBeUsedInspection */
 
 declare(strict_types=1);
@@ -30,6 +31,11 @@ class Day16 extends DayBehaviour implements DayInterface
 
     public function solvePart2(): ?int
     {
+        /**
+         * @var array<string, array<int,array<int>>> $rules
+         * @var array<int, array<int>>               $my
+         * @var array<int, array<int>>               $nearby
+         */
         [$rules, $my, $nearby] = $this->getTicketDataFromInput($this->input);
 
         // remove invalid tickets… these are tickets with numbers that don't pass any rules
@@ -43,12 +49,11 @@ class Day16 extends DayBehaviour implements DayInterface
                 ))
             )
         );
-        // append my ticket
-        $nearby = array_merge($nearby, $my);
 
-        // now calculate the order the rules go
+        // build a list of rule positions containing each rule that 100% applies to ticket numbers in that position
+        // note: there will be multiple per position
         $maxScore = count($nearby);
-        /* @var array<int<string>> $rulePositions */
+        /* @var array<int,<string>> $rulePositions */
         $rulePositions = [];
         for ($position = 0, $positionMax = count($rules); $position < $positionMax; ++$position) {
             foreach ($rules as $ruleName => $ruleSet) {
@@ -58,27 +63,31 @@ class Day16 extends DayBehaviour implements DayInterface
                 }
             }
         }
-        /* we now have an array containing positions and every rule that applies to that position
-         many of the rules apply to multiple positions, so can't simply sort and pick the highest
-         however after sorting the positions by number of applicable rules, we discover there is a position
-         that has only a single rule, and the next position in turn has 2, one of which is our first rule,
-         and so on and so on… is your head hurting yet? :D
-         with all of that said, now we have an approach: starting with the position with a single rule,
-         loop and remove assigned rules from the rest. This will give us ordered list containing one rule
-         per position.*/
-        uasort($rulePositions, fn ($a, $b) => count($a) <=> count($b));
+
+        // We now have an array containing positions and every rule that applies to that position,
+        // Many of the rules apply to multiple positions, so can't simply sort and pick the highest.
+        // However, after sorting the positions by number of applicable rules, we discover there is a position
+        // that has only a single rule, and the next position in turn has 2, one of which is our first rule,
+        // and so on and so on… is your head hurting yet? :D
+        //
+        // With that in mind, we can get an ordered list containing one rule per position by doing the following:
+        // 1. Sort ascending based on number of rules,
+        // 2. Starting with the position with a single rule, assign that to a new array ($finalRulePositions)
+        // 3. loop onward, removing rules from the current position that exist in $finalRulePositions
+        // 4. We should be left with 1 rule per position.
+        uasort($rulePositions, fn (array $a, array $b) => count($a) <=> count($b)); // sort ascending: no. of rules
         $finalRulePositions = [];
         foreach ($rulePositions as $position => $rulesInPosition) {
-            $actualRules = array_diff($rulesInPosition, $finalRulePositions);
+            $actualRules = array_diff($rulesInPosition, $finalRulePositions); // the delta will contain only 1 rule
             if (1 === count($actualRules)) {
                 $finalRulePositions[$position] = array_pop($actualRules);
             }
         }
 
+        // return the sum of all fields starting with departure from our ticket
         $departureRules = array_filter($finalRulePositions, fn (string $r) => str_starts_with($r, 'departure'));
 
-        // returning the sum of all fields starting with departure from our ticket
-        return array_reduce(array_keys($departureRules), fn ($sum, $key) => $sum * $my[0][$key], 1);
+        return array_reduce(array_keys($departureRules), fn (int $sum, int $key) => $sum * $my[0][$key], 1);
     }
 
     /**
@@ -122,7 +131,7 @@ class Day16 extends DayBehaviour implements DayInterface
         $inputPositions = array_keys($ticket);
         // start the pointer at rules
         $p = array_shift($inputPositions);
-        // loop over each input, when we encounter a blank new line, update our pointer ($p) to the next position
+        // loop over each line, when we encounter a blank new line, update our pointer ($p) to the next position
         foreach ($input as $line) {
             if (PHP_EOL === $line) {
                 $p = array_shift($inputPositions);
@@ -133,7 +142,7 @@ class Day16 extends DayBehaviour implements DayInterface
             if (0 === $p) {
                 [$ruleName, $numbers] = explode(':', $line, 2);
                 if (1 <= preg_match_all('/(\d+)/', $numbers, $matches)) {
-                    $ticket[$p][$ruleName] = array_map(static fn (array $a) => array_map('intval', $a), array_chunk($matches[1], 2));
+                    $ticket[$p][$ruleName] = array_map(fn (array $a) => array_map('intval', $a), array_chunk($matches[1], 2));
                 }
             } elseif (str_contains($line, ',')) { // parse the comma separated list of numbers
                 $ticket[$p][] = array_map('intval', explode(',', $line));
