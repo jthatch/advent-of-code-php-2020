@@ -52,7 +52,7 @@ class Waypoint implements WaypointInterface
             static::DIRECTION_WEST => [-$this->latitude, -$this->longitude],
             // 270 lat = long, long - -lat
             static::DIRECTION_NORTH => [$this->longitude, -$this->latitude],
-            default                 => null,
+            default                 => [0, 0],
         };
 
         return $direction;

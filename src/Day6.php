@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App;
 
-use App\Interfaces\DayInterface;
+use App\Contracts\DayBehaviour;
 
-class Day6 extends DayBehaviour implements DayInterface
+class Day6 extends DayBehaviour
 {
     /**
      * For each group, count the number of questions to which anyone answered "yes". What is the sum of those counts?

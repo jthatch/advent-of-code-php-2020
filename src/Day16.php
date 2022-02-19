@@ -6,9 +6,9 @@ declare(strict_types=1);
 
 namespace App;
 
-use App\Interfaces\DayInterface;
+use App\Contracts\DayBehaviour;
 
-class Day16 extends DayBehaviour implements DayInterface
+class Day16 extends DayBehaviour
 {
     public function solvePart1(): ?int
     {

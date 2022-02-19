@@ -6,6 +6,14 @@ parameters:
     tmpDir: /tmp
     paths:
         - src
+        - tests
+    ignoreErrors:
+        -
+            message: '#Undefined variable: \$this#'
+            path: tests/*
+        -
+            message: '#Call to an undefined method Pest\\Expectation\|Pest\\Support\\Extendable::toBe\(\).#'
+            path: tests/*
 
     # The level 8 is the highest level
     level: 8

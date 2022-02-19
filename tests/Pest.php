@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-function getDayFromFile(string $file): ?int
+function getDayFromFile(string $file): int
 {
     preg_match('/Day(\d{1,2})Test/', $file, $matches);
 
-    return ($matches[1] ?? null) ? (int) $matches[1] : null;
+    return ($matches[1] ?? null) ? (int) $matches[1] : 0;
 }
 
 function humanReadableBytes(int $bytes, ?int $precision = null): string

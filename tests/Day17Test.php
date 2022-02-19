@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
+use App\Contracts\DayInterface;
 use App\DayFactory;
-use App\Interfaces\DayInterface;
 
 uses()->beforeEach(function (): void {
     /* @var DayInterface day */
@@ -19,4 +19,3 @@ test('solves part2')
     ->expect(fn () => $this->day->solvePart2())
     ->toBe(null)
 ;
-

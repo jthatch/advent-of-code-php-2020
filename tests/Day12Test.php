@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
+use App\Contracts\DayInterface;
 use App\Day12\Ship;
 use App\Day12\ShipWithWaypoint;
 use App\Day12\Waypoint;
 use App\DayFactory;
-use App\Interfaces\DayInterface;
 
 uses()->beforeEach(function (): void {
     /* @var DayInterface day */

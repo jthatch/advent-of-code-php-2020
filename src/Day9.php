@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App;
 
-use App\Interfaces\DayInterface;
+use App\Contracts\DayBehaviour;
 
-class Day9 extends DayBehaviour implements DayInterface
+class Day9 extends DayBehaviour
 {
     /**
      * The first step of attacking the weakness in the XMAS data is to find the first number in the list (after the preamble)

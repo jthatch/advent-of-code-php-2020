@@ -34,15 +34,12 @@ help: ## This help.
 
 # basic vars
 image-name :=aoc-2020
-php-image  :=php:8-cli
 uid        :=$(shell id -u)
 gid        :=$(shell id -g)
 
 # define our reusable docker run commands
-# php -dxdebug.mode=off -dzend_extension=opcache.so -dopcache.enable_cli=1 -dopcache.jit_buffer_size=100M -dopcache.jit=1255 run.php $(onlyThisDay)
-
-# For Day13 I needed the gmp library, so I made my own docker image based on php:8-cli (see Dockerfile)
-define DOCKER_RUN_PHP_MY_IMAGE
+# For Day13 I needed the gmp library, so I made my own docker image based on php:8.1-cli (see Dockerfile)
+define DOCKER_RUN
 docker run -it --rm --init \
 	--name "$(image-name)" \
 	-u "$(uid):$(gid)" \
@@ -51,47 +48,19 @@ docker run -it --rm --init \
 	-w /app
 endef
 
-define DOCKER_RUN_PHP
-docker run -it --rm --init \
-	--name "$(image-name)" \
-	-u "$(uid):$(gid)" \
-	-v "$(PWD):/app" \
-	-w /app \
-	"$(php-image)"
-endef
-
-define DOCKER_RUN_PHP_XDEBUG
-docker run -it --rm --init \
-	--name "$(image-name)-xdebug" \
-	--network=host\
-	-u "$(uid):$(gid)" \
-	-e PHP_IDE_CONFIG="serverName=$(image-name)" \
-	-v "$(PWD):/app" \
-	-v "$(PWD)/xdebug.ini:/usr/local/etc/php/conf.d/xdebug.ini" \
-	-w /app \
-	mileschou/xdebug:8.0
-endef
-
-define DOCKER_RUN_COMPOSER
-docker run --rm -it \
-	--name "$(image-name)-composer" \
-	-u "$(uid):$(gid)" \
-	-v "$(PWD):/app" \
-	-v "/tmp:/tmp" \
-	-w /app \
-	composer
+# give php some juice
+define PHP_CL_TWEAKS
+-dmemory_limit=1G -dopcache.enable_cli=1 -dopcache.jit_buffer_size=100M -dopcache.jit=1255
 endef
 
 run: ## runs each days solution without test framework
 ifeq ($(shell docker image inspect $(image-name) > /dev/null 2>&1 || echo not_exists), not_exists)
 	@echo -e "\nFirst run detected! No $(image-name) docker image found, running docker build...\n"
-	DOCKER_BUILDKIT=1 docker build --build-arg UID=$(shell id -u) --build-arg GID=$(shell id -g) \
-		--tag="$(image-name)" \
-		-f Dockerfile .
+	make build
 	make run
 else
 ifneq ("$(wildcard vendor)", "")
-	@$(DOCKER_RUN_PHP_MY_IMAGE) $(image-name) php -dmemory_limit=600M -dopcache.enable_cli=1 -dopcache.jit_buffer_size=100M -dopcache.jit=1255 run.php $(onlyThis)
+	@$(DOCKER_RUN) $(image-name) php $(PHP_CL_TWEAKS) run.php $(onlyThis)
 else
 	@echo -e "\nFirst run detected! No vendor/ folder found, running composer update...\n"
 	make composer
@@ -102,13 +71,11 @@ endif
 tests: ## runs each days pest tests within a docker container
 ifeq ($(shell docker image inspect $(image-name) > /dev/null 2>&1 || echo not_exists), not_exists)
 	@echo -e "\nFirst run detected! No $(image-name) docker image found, running docker build...\n"
-	DOCKER_BUILDKIT=1 docker build --build-arg UID=$(shell id -u) --build-arg GID=$(shell id -g) \
-		--tag="$(image-name)" \
-		-f Dockerfile .
+	make build
 	make tests
 else
 ifneq ("$(wildcard vendor)", "")
-	$(DOCKER_RUN_PHP_MY_IMAGE) $(image-name) php -dmemory_limit=600M vendor/bin/pest --testdox
+	$(DOCKER_RUN) $(image-name) php $(PHP_CL_TWEAKS) vendor/bin/pest --testdox
 else
 	@echo -e "\nFirst run detected! No vendor/ folder found, running composer update...\n"
 	make composer
@@ -118,29 +85,34 @@ endif
 
 composer: ## Runs `composer update` on CWD, specify other commands via cmd=
 ifdef cmd
-	$(DOCKER_RUN_PHP_MY_IMAGE) $(image-name) composer --no-cache $(cmd)
+	$(DOCKER_RUN) $(image-name) composer --no-cache $(cmd)
 else
-	$(DOCKER_RUN_PHP_MY_IMAGE) $(image-name) composer --no-cache update
+	$(DOCKER_RUN) $(image-name) composer --no-cache update
 endif
 
+build: ## Builds the docker image
+	DOCKER_BUILDKIT=1 docker build --build-arg UID=$(shell id -u) --build-arg GID=$(shell id -g) \
+		--tag="$(image-name)" \
+		-f Dockerfile .
+
 shell: ## Launch a shell into the docker container
-	$(DOCKER_RUN_PHP_MY_IMAGE) $(image-name) /bin/bash
+	$(DOCKER_RUN) $(image-name) /bin/bash
 
 xdebug: ## Launch a php container with xdebug (port 10000)
-	@$(DOCKER_RUN_PHP_MY_IMAGE) -e XDEBUG_MODE=debug $(image-name) php -dmemory_limit=600M run.php $(onlyThis)
+	@$(DOCKER_RUN) -e XDEBUG_MODE=debug $(image-name) php -dmemory_limit=1G run.php $(onlyThis)
 
 xdebug-profile: ## Runs the xdebug profiler for analysing performance
-	$(DOCKER_RUN_PHP_MY_IMAGE) -e XDEBUG_MODE=profile $(image-name) php -dxdebug.output_dir=/app -dmemory_limit=600M run.php $(onlyThis)
+	$(DOCKER_RUN) -e XDEBUG_MODE=profile $(image-name) php -dxdebug.output_dir=/app -dmemory_limit=1G run.php $(onlyThis)
 
 cleanup: ## remove all docker images
 	docker rm $$(docker ps -a | grep '$(image-name)' | awk '{print $$1}') --force || true
 	docker image rm $(image-name)
 
 cs-fix: ## run php-cs-fixer
-	$(DOCKER_RUN_PHP_MY_IMAGE) $(image-name) composer --no-cache run cs-fixer
+	$(DOCKER_RUN) $(image-name) composer --no-cache run cs-fixer
 
 phpstan: ## run phpstan
-	$(DOCKER_RUN_PHP_MY_IMAGE) $(image-name) composer --no-cache run phpstan
+	$(DOCKER_RUN) $(image-name) composer run phpstan
 
 get-input: ## Retrieves the latest day's input from server
 ifndef aocCookie
@@ -151,7 +123,7 @@ else
 	@curl -s --location --request GET 'https://adventofcode.com/2020/day/$(latestDay)/input' --header 'Cookie: session=$(aocCookie)' -o ./input/day$(latestDay).txt && echo "./src/day$(latestDay).txt downloaded" || echo "error downloading"
 endif
 define DAY_TEMPLATE
-<?php\n\ndeclare(strict_types=1);\n\nnamespace App;\n\nuse App\Interfaces\DayInterface;\n\nclass Day$(nextDay) extends DayBehaviour implements DayInterface\n{\n    public function solvePart1(): ?int\n    {\n        // TODO: Implement solvePart1() method.\n        return null;\n    }\n\n    public function solvePart2(): ?int\n    {\n        // TODO: Implement solvePart2() method.\n        return null;\n    }\n}\n
+<?php\n\ndeclare(strict_types=1);\n\nnamespace App;\n\nuse App\Interfaces\DayInterface;\n\nclass Day$(nextDay) extends DayBehaviour\n{\n    public function solvePart1(): ?int\n    {\n        // TODO: Implement solvePart1() method.\n        return null;\n    }\n\n    public function solvePart2(): ?int\n    {\n        // TODO: Implement solvePart2() method.\n        return null;\n    }\n}\n
 endef
 define DAY_TEST_TEMPLATE
 <?php\n\ndeclare(strict_types=1);\n\nuse App\DayFactory;\nuse App\Interfaces\DayInterface;\n\nuses()->beforeEach(function (): void {\n    /* @var DayInterface day */\n    \$$this->day = DayFactory::create(getDayFromFile(__FILE__));\n});\n\ntest('solves part1')\n    ->expect(fn () => \$$this->day->solvePart1())\n    ->toBe(null)\n;\n\ntest('solves part2')\n    ->expect(fn () => \$$this->day->solvePart2())\n    ->toBe(null)\n;\n

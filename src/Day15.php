@@ -4,10 +4,10 @@ declare(strict_types=1);
 
 namespace App;
 
-use App\Interfaces\DayInterface;
+use App\Contracts\DayBehaviour;
 use SplFixedArray;
 
-class Day15 extends DayBehaviour implements DayInterface
+class Day15 extends DayBehaviour
 {
     /**
      * @see oldPart1() for original implementation. Very slow, very pants… no chance for part 2 unless bruteforcing it

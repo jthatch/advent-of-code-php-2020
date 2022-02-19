@@ -4,12 +4,12 @@ declare(strict_types=1);
 
 namespace App;
 
+use App\Contracts\DayBehaviour;
 use App\Day12\Ship;
 use App\Day12\ShipWithWaypoint;
 use App\Day12\Waypoint;
-use App\Interfaces\DayInterface;
 
-class Day12 extends DayBehaviour implements DayInterface
+class Day12 extends DayBehaviour
 {
     protected function getInputAsDirectionAmountArr(): array
     {

@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace App;
+namespace App\Contracts;
 
-abstract class DayBehaviour
+abstract class DayBehaviour implements DayInterface
 {
     public function __construct(protected array $input)
     {

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App;
 
-use App\Interfaces\DayInterface;
+use App\Contracts\DayBehaviour;
 
-class Day14 extends DayBehaviour implements DayInterface
+class Day14 extends DayBehaviour
 {
     protected const REGEX = [
         'mask' => '/mask = ([X10]{36})/is',

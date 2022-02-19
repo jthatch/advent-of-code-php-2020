@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App;
 
-use App\Interfaces\DayInterface;
+use App\Contracts\DayBehaviour;
 
-class Day11 extends DayBehaviour implements DayInterface
+class Day11 extends DayBehaviour
 {
     protected array $seats;
     private int $yMax;

@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App;
 
-use App\Interfaces\DayInterface;
+use App\Contracts\DayBehaviour;
 
-class Day10 extends DayBehaviour implements DayInterface
+class Day10 extends DayBehaviour
 {
     protected array $cache = [];
 

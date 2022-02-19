@@ -1,4 +1,4 @@
-FROM php:8-cli
+FROM php:8.1-cli
 
 ENV XDEBUG_MODE=off
 
@@ -32,7 +32,7 @@ COPY xdebug.ini /usr/local/etc/php/conf.d/xdebug.ini
 
 # composer
 # disabled to keep sizes down, we'll need git and zip added to the image in order to use composer
-COPY --from=composer:2.0 /usr/bin/composer /usr/local/bin/composer
+COPY --from=composer:2.2.6 /usr/bin/composer /usr/local/bin/composer
 
 WORKDIR /app
 

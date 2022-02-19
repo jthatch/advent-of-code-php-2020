@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App;
 
+use App\Contracts\DayInterface;
 use App\Exceptions\DayClassNotFoundException;
 use App\Exceptions\DayInputNotFoundException;
-use App\Interfaces\DayInterface;
 
 class DayFactory
 {
@@ -14,17 +14,27 @@ class DayFactory
     protected const CLASS_FORMAT = 'Day%d';
     protected const INPUT_FORMAT = __DIR__.'/../input/day%d.txt';
 
+    /**
+     * @param int $dayNumber
+     *
+     * @return DayInterface
+     *
+     * @throws DayInputNotFoundException|DayClassNotFoundException
+     */
     public static function create(int $dayNumber): DayInterface
     {
-        $dayClassName = static::getDayClass($dayNumber);
-        $dayInputName = static::getDayInput($dayNumber);
+        /** @phpstan-var class-string<DayInterface> **/
+        $dayClassName = self::getDayClass($dayNumber);
+        $dayInputName = self::getDayInput($dayNumber);
 
         $dayInput = file_exists($dayInputName)
             ? file($dayInputName) // this includes new lines as we want the raw input
             : throw new DayInputNotFoundException("Input file not found: {$dayInputName}", $dayNumber);
+        if (!class_exists($dayClassName)) {
+            throw new DayClassNotFoundException("Missing day class: {$dayClassName}");
+        }
 
-        return new $dayClassName($dayInput)
-            ?? throw new DayClassNotFoundException("Missing day class: {$dayClassName}");
+        return new $dayClassName($dayInput);
     }
 
     public static function allAvailableDays(): \Generator
@@ -38,6 +48,11 @@ class DayFactory
         }
     }
 
+    /**
+     * @param int $dayNumber
+     *
+     * @return class-string<DayInterface>|string
+     */
     private static function getDayClass(int $dayNumber): string
     {
         return __NAMESPACE__.'\\'.sprintf(static::CLASS_FORMAT, $dayNumber);

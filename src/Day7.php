@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App;
 
-use App\Interfaces\DayInterface;
+use App\Contracts\DayBehaviour;
 
-class Day7 extends DayBehaviour implements DayInterface
+class Day7 extends DayBehaviour
 {
     protected array $bags = [];
 
@@ -69,6 +69,7 @@ class Day7 extends DayBehaviour implements DayInterface
     {
         $child = $this->bags[$targetBag] ?? [];
 
+        /* @phpstan-ignore-next-line  */
         return array_map(fn (string $childBag, int $count): array => [
                 'bag'   => $childBag,
                 'count' => $count,

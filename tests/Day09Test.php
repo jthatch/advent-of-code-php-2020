@@ -2,8 +2,8 @@
 
 declare(strict_types=1);
 
+use App\Contracts\DayInterface;
 use App\DayFactory;
-use App\Interfaces\DayInterface;
 
 uses()->beforeEach(function (): void {
     /* @var DayInterface day */

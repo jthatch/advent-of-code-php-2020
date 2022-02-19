@@ -1,12 +1,12 @@
 ## Advent of Code 2020 PHP
-The solutions to [advent of code 2020](https://adventofcode.com/2020), solved using PHP8. By [James Thatcher](http://github.com/jthatch)
+The solutions to [advent of code 2020](https://adventofcode.com/2020), solved using PHP 8.1. By [James Thatcher](http://github.com/jthatch)
 
 ### Solutions 🥳🎉
 > 🎄 [Day 1](/src/Day1.php) 🎅 [Day 2](/src/Day2.php) ☃️ [Day 3](/src/Day3.php) 🦌 [Day 4](/src/Day4.php) 🍪 [Day 5](/src/Day5.php) 
 > 🥛 [Day 6](/src/Day6.php) 🧦 [Day 7](/src/Day7.php) 🎁 [Day 8](/src/Day8.php)   
 > ⛄ [Day 9](/src/Day9.php) 🛐 [Day 10](/src/Day10.php) ⛄ [Day 11](/src/Day11.php) 🍪 [Day 12](/src/Day12.php) ☃️ [Day 13](/src/Day13.php) 🎅 [Day 14](/src/Day14.php) 🎄 [Day 15](/src/Day15.php) 🧦 [Day 16](/src/Day16.php)
 ### About
-My attempts at tacking the awesome challenges at [Advent of Code 2020](https://adventofcode.com/2020/day/1) using PHP8.
+My attempts at tacking the awesome challenges at [Advent of Code 2020](https://adventofcode.com/2020/day/1) using PHP 8.1.
 
 For those who don't know what Advent of Code is, it is simply put, the **best** programming challenges you'll find on
 the web.   

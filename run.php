@@ -16,8 +16,8 @@
  */
 declare(strict_types=1);
 
+use App\Contracts\DayInterface;
 use App\DayFactory;
-use App\Interfaces\DayInterface;
 
 $totalStartTime = microtime(true);
 require 'vendor/autoload.php';

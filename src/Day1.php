@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App;
 
-use App\Interfaces\DayInterface;
+use App\Contracts\DayBehaviour;
 
-class Day1 extends DayBehaviour implements DayInterface
+class Day1 extends DayBehaviour
 {
     /**
      * Find the two entries that sum to 2020; what do you get if you multiply them together?
